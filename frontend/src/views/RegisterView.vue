@@ -56,7 +56,7 @@
                 <label for="phone" class="form-label">Téléphone *</label>
                 <input
                   id="phone"
-                  v-model="userInfo.phone"
+                  v-model="phone"
                   type="tel"
                   class="form-control"
                   required
@@ -94,6 +94,7 @@ const firstName = ref("");
 const lastName = ref("");
 const email = ref("");
 const password = ref("");
+const phone = ref("");
 const errorMessage = ref("");
 const loading = ref(false);
 const router = useRouter();
@@ -108,6 +109,7 @@ const handleRegister = async () => {
       prenom: firstName.value, // Correction : prenom = firstName
       email: email.value,
       password: password.value,
+      telephone: phone.value, // Ajout du champ téléphone
     });
     // Connexion automatique après inscription
     const success = await store.dispatch("auth/login", {

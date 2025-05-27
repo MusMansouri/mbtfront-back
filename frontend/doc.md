@@ -1742,3 +1742,7 @@ Vérifiez que les fichiers suivants existent dans `src/data/` :
 ---
 
 Pour les tests unitaires, consultez la documentation officielle de Vue ou des outils comme Jest ou Vitest pour démarrer rapidement.
+
+> **Note de cohérence :**  
+> Ce projet inclut un front-end Vue 3 **et** un back-end partiel (présent dans le dossier `backend/`).  
+> Contrairement à ce qui était indiqué précédemment, il existe donc bien une partie back-end (Node.js/Express) pour la gestion des données et de l’authentification.
