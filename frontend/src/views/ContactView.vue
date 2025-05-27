@@ -96,6 +96,17 @@
 
       <!-- formulaire : 100 % largeur sur mobile, 6 / 12 ≥ lg -->
       <div class="col-12 col-lg-6">
+        <!-- Ajoutez ce bloc juste au-dessus du formulaire ou du bouton d'envoi -->
+        <div
+          v-if="submitStatus"
+          class="alert"
+          :class="
+            submitStatus.includes('erreur') ? 'alert-danger' : 'alert-success'
+          "
+        >
+          {{ submitStatus }}
+        </div>
+
         <form
           class="vstack gap-3 needs-validation"
           @submit.prevent="submitForm"
@@ -278,6 +289,7 @@ const tel = ref("");
 const message = ref("");
 
 const errors = ref({});
+const submitStatus = ref(""); // Pour afficher le statut d'envoi
 
 const validateForm = () => {
   errors.value = {};
@@ -298,16 +310,39 @@ const validateForm = () => {
   return Object.keys(errors.value).length === 0;
 };
 
-const submitForm = () => {
+const submitForm = async () => {
   if (validateForm()) {
-    // Handle form submission
-    console.log("Form submitted:", {
-      firstName,
-      lastName,
-      email,
-      tel,
-      message,
-    });
+    try {
+      submitStatus.value = "";
+      // Utilise le bon port pour le backend
+      const response = await fetch(`${API_URL}/contact`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          firstName: firstName.value,
+          lastName: lastName.value,
+          email: email.value,
+          tel: tel.value,
+          message: message.value,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Erreur lors de l'envoi du message.");
+      }
+
+      submitStatus.value = "Votre message a bien été envoyé !";
+      // Réinitialiser le formulaire
+      firstName.value = "";
+      lastName.value = "";
+      email.value = "";
+      tel.value = "";
+      message.value = "";
+    } catch (error) {
+      submitStatus.value = "Une erreur est survenue. Veuillez réessayer.";
+    }
   }
 };
 </script>

@@ -126,8 +126,7 @@ const handleRegister = async () => {
       router.push("/login");
     }
   } catch (error) {
-    errorMessage.value =
-      error?.response?.data?.error || "Erreur lors de l'inscription.";
+    errorMessage.value = error.message || "Erreur lors de l'inscription.";
   } finally {
     loading.value = false;
   }

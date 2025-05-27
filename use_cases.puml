@@ -1,0 +1,26 @@
+@startuml
+left to right direction
+
+actor "Visiteur" as Visiteur
+actor "Utilisateur" as Utilisateur
+actor "Admin" as Admin
+
+rectangle "Application Mabote" {
+  Visiteur -- (Consulter les rituels)
+  Visiteur -- (Consulter les conseils)
+  Visiteur -- (S'inscrire)
+  Visiteur -- (Réserver un rendez-vous)
+
+  Utilisateur -- (Réserver un rendez-vous)
+  Utilisateur -- (Consulter ses rendez-vous)
+  Utilisateur -- (Gérer son profil)
+  Utilisateur -- (Se déconnecter)
+
+  Admin -- (Gérer les utilisateurs)
+  Admin -- (Gérer les rituels)
+  Admin -- (Gérer les rendez-vous)
+  Admin -- (Gérer les conseils)
+  Admin -- (Consulter les statistiques)
+}
+
+@enduml

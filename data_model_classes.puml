@@ -1,0 +1,51 @@
+@startuml
+class Utilisateur {
+  +id: int
+  +nom: string
+  +prenom: string
+  +email: string
+  +motDePasse: string
+  +role: string
+}
+
+class Admin
+Admin <|-- Utilisateur
+
+class RendezVous {
+  +id: int
+  +date: Date
+  +heure: string
+  +statut: string
+  // +guestNom: string (Optionnel, si non lié à un Utilisateur)
+  // +guestEmail: string (Optionnel, si non lié à un Utilisateur)
+}
+
+class Rituel {
+  +id: int
+  +nom: string
+  +description_courte: string
+  +description_longue: string
+  +prix: float
+  +duree_minutes: int
+  +image: string
+}
+
+class Conseil {
+  +id: int
+  +titre: string
+  +contenu: string
+}
+
+class Feedback {
+  +id: int
+  +commentaire: string
+  +note: int
+  +date: Date
+}
+
+Utilisateur "0..1" -- "0..*" RendezVous : est_associé_à
+RendezVous "1" -- "1" Rituel : concerne
+
+Utilisateur "1" -- "0..*" Feedback : donne
+Feedback "0..*" -- "0..1" Rituel : concerne_rituel
+@enduml

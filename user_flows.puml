@@ -1,0 +1,37 @@
+@startuml
+actor "Visiteur" as Visiteur
+actor "Utilisateur" as Utilisateur
+actor "Admin" as Admin
+participant "Front-end" as Front
+participant "Back-end" as Back
+database "DB" as DB
+
+Visiteur -> Front : Accéder à la liste des rituels
+Front -> Back : GET /rituels
+Back -> DB : Lire rituels
+DB --> Back : Liste rituels
+Back --> Front : Liste rituels
+Front --> Visiteur : Affiche rituels
+
+Visiteur -> Front : S'inscrire
+Front -> Back : POST /register
+Back -> DB : Créer utilisateur
+DB --> Back : Confirmation
+Back --> Front : Résultat
+Front --> Visiteur : Affiche confirmation
+
+Utilisateur -> Front : Réserver un rendez-vous
+Front -> Back : POST /rendezvous
+Back -> DB : Créer rendez-vous
+DB --> Back : Confirmation
+Back --> Front : Résultat
+Front --> Utilisateur : Affiche confirmation
+
+Admin -> Front : Gérer les utilisateurs
+Front -> Back : GET/POST/PUT/DELETE /utilisateurs
+Back -> DB : Opérations CRUD
+DB --> Back : Résultat
+Back --> Front : Résultat
+Front --> Admin : Affiche résultat
+
+@enduml

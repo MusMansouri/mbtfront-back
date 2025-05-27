@@ -1,0 +1,9 @@
+@startuml
+node "Client Web (Vue.js)" as Front
+node "API Serveur (Node.js/Express)" as Back
+database "Base de données (JSON ou MongoDB)" as DB
+
+Front --> Back : HTTP (REST API)
+Back --> DB : Accès/CRUD
+
+@enduml
