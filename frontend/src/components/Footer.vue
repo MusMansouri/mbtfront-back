@@ -11,10 +11,10 @@
 
     <!-- Contenu de droite -->
     <div class="hero__content">
-      <h1>Let’s Begin Your Skincare<br />Journey</h1>
+      <h1>Commencez votre voyage beauté avec MABÔTÉ</h1>
       <p>
-        Ready to achieve radiant, healthy skin? Let us help you get started
-        today.
+        Prêt(e) à révéler une peau éclatante et rayonnante ? Laissez-nous vous
+        accompagner dès aujourd'hui vers le bien-être et la beauté.
       </p>
 
       <router-link

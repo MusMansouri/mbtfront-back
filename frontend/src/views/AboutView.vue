@@ -5,11 +5,19 @@
       <!-- ===== Titre principal ===== -->
       <header class="text-center mb-5">
         <h1 class="display-5 fw-bold brand-title mb-3">
-          Votre voyage vers une peau éclatante commence ici
+          Découvrez l'institut de beauté MABÔTÉ
         </h1>
         <p class="lead brand-text mb-0">
-          Chez Glisten, nous combinons science, soin et expertise pour révéler
-          le meilleur de votre peau.
+          Chez MABÔTÉ, nous combinons expertise, passion et soins sur-mesure
+          pour révéler le meilleur de votre beauté.<br />
+          <span style="display: block; margin-top: 1rem">
+            Notre philosophie : chaque personne est unique et mérite une
+            attention personnalisée. Nous vous accueillons dans un cadre raffiné
+            et chaleureux, propice à la détente et à la confiance.<br />
+            Notre équipe d'esthéticiennes expérimentées met tout en œuvre pour
+            vous offrir des prestations d'exception, alliant gestes experts,
+            innovations beauté et écoute attentive de vos besoins.
+          </span>
         </p>
       </header>
 
@@ -19,7 +27,7 @@
         <div class="col-12 col-md-6">
           <img
             src="@/assets/about.png"
-            alt="Dermatologue examinant la peau d'un client"
+            alt="Esthéticienne prodiguant un soin dans l'institut de beauté MABÔTÉ"
             class="img-fluid rounded-4 shadow-sm"
             loading="lazy"
           />
@@ -27,15 +35,23 @@
 
         <!-- complément d’info -->
         <div class="col-12 col-md-6">
-          <h2 class="h4 fw-semibold mb-3">Pourquoi choisir Glisten&nbsp;?</h2>
+          <h2 class="h4 fw-semibold mb-3">Pourquoi choisir MABÔTÉ&nbsp;?</h2>
           <ul class="list-unstyled lh-lg">
             <li>
-              ✓ Plans de traitement personnalisés basés sur la science
-              dermatologique
+              ✓ Soins personnalisés réalisés par des expertes beauté, à l'écoute
+              de vos envies
             </li>
-            <li>✓ Technologie de pointe et spécialistes certifiés</li>
             <li>
-              ✓ Approche holistique : soins de la peau, nutrition, style de vie
+              ✓ Produits professionnels, naturels et technologies de pointe pour
+              des résultats visibles
+            </li>
+            <li>
+              ✓ Ambiance cocooning, conseils beauté adaptés et suivi attentionné
+              après chaque rendez-vous
+            </li>
+            <li>
+              ✓ Engagement pour votre bien-être global : beauté, relaxation,
+              confiance en soi
             </li>
           </ul>
 

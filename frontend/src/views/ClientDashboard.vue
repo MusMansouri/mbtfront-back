@@ -248,14 +248,14 @@
                     v-if="editingFeedbackId !== fb.id"
                     @click="startEditFeedback(fb)"
                   >
-                    <i class="bi bi-pencil"></i>
+                    <i class="bi bi-pencil"></i> Modifier
                   </button>
                   <button
                     class="btn btn-outline-danger btn-sm"
                     @click="deleteFeedback(fb.id)"
                     aria-label="Supprimer ce feedback"
                   >
-                    <i class="bi bi-trash"></i>
+                    <i class="bi bi-trash"></i> supprimer
                   </button>
                 </div>
               </li>

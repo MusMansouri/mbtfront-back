@@ -4,22 +4,30 @@
     <div class="container py-5">
       <div class="row align-items-center g-5">
         <div class="col-12 col-lg-6 order-1 order-lg-1">
-
           <h1 class="display-4 display-lg-3 fw-bold mb-4 brand-title">
-            Prenez soin de votre peau,<br />
-            Prenez soin de votre<br />
-            Beauté
+            Bienvenue à l'institut de beauté MABÔTÉ<br />
+            Prenez soin de votre beauté
           </h1>
           <p
             class="fs-6 fs-lg-5 lh-lg text-center text-lg-start mb-4 brand-text"
           >
-            Les meilleurs dermatologues de notre clinique de soins de la peau
-            offrent des services esthétiques de qualité.
+            Découvrez l'excellence de l'institut MABÔTÉ : nos expertes beauté
+            vous proposent des soins personnalisés et des rituels bien-être pour
+            révéler votre éclat naturel.<br />
+            <span style="display: block; margin-top: 1rem">
+              Chez MABÔTÉ, chaque visite est une parenthèse de douceur où votre
+              bien-être est notre priorité. Profitez d'une atmosphère apaisante,
+              de conseils sur-mesure et de produits haut de gamme sélectionnés
+              pour sublimer votre peau.<br />
+              Notre équipe passionnée vous accompagne à chaque étape pour
+              révéler la meilleure version de vous-même. Laissez-vous choyer et
+              vivez une expérience sensorielle unique, pensée pour votre beauté
+              et votre sérénité.
+            </span>
           </p>
           <div
             class="d-flex flex-wrap gap-3 justify-content-center justify-content-lg-start"
           >
-
             <router-link
               to="/rituels"
               class="btn btn-outline-primary btn-lg rounded-pill px-4 py-2 d-flex align-items-center hero-btn"
@@ -52,7 +60,7 @@
           <div class="hero-img-wrapper position-relative">
             <img
               src="@/assets/image380.png"
-              alt="Illustration de traitement de soin de la peau"
+              alt="Institut de beauté MABÔTÉ - illustration soin beauté"
               class="img-fluid hero-img"
               loading="lazy"
             />
