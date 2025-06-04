@@ -1,0 +1,86 @@
+@startuml
+class Utilisateur {
+  +id: int
+  +nom: string
+  +prenom: string
+  +email: string
+  +password: string
+  +role: string
+  +telephone: string
+  +createdAt: DateTime
+  +updatedAt: DateTime
+}
+
+class Admin
+Admin <|-- Utilisateur
+
+class RendezVous {
+  +id: int
+  +date: Date
+  +heure: string
+  +status: string
+  +userInfo: json
+  +telephone: string
+  +createdAt: DateTime
+  +updatedAt: DateTime
+}
+
+class Rituel {
+  +id: int
+  +name: string
+  +description: string
+  +longDescription: string
+  +steps: json
+  +duration: int
+  +price: float
+  +image: string
+  +createdAt: DateTime
+  +updatedAt: DateTime
+}
+
+class Conseil {
+  +id: int
+  +title: string
+  +content: string
+  +category: string
+  +img: string
+  +createdAt: DateTime
+  +updatedAt: DateTime
+}
+
+class Feedback {
+  +id: int
+  +comment: string
+  +photo: string
+  +createdAt: DateTime
+  +updatedAt: DateTime
+}
+
+class ContactMessage {
+  +id: int
+  +first_name: string
+  +last_name: string
+  +email: string
+  +tel: string
+  +message: string
+  +createdAt: DateTime
+  +updatedAt: DateTime
+}
+
+class Availability {
+  +id: int
+  +date: Date
+  +startTime: string
+  +endTime: string
+  +isBooked: bool
+  +createdAt: DateTime
+  +updatedAt: DateTime
+}
+
+Utilisateur "0..1" -- "0..*" RendezVous : prend
+RendezVous "1" -- "1" Rituel : concerne
+Utilisateur "1" -- "0..*" Feedback : donne
+Feedback "0..*" -- "0..1" Rituel : concerne_rituel
+Utilisateur "1" -- "0..*" ContactMessage : envoie
+RendezVous "0..*" -- "0..1" Availability : sur
+@enduml

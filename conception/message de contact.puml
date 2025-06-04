@@ -1,0 +1,13 @@
+@startuml
+actor Visiteur as V
+participant "Interface Web" as UI
+participant "Serveur" as Server
+database "Base de Données" as DB
+
+V -> UI : Remplit le formulaire de contact \n(nom, email, message)
+UI -> Server : Envoi du message de contact
+Server -> DB : **Insérer** un nouveau contact (first_name, last_name, email, message...)
+DB --> Server : Accusé de réception stocké
+Server --> UI : Confirmation d’envoi du message
+UI --> V : Message de confirmation affiché \n("Votre message a bien été envoyé")
+@enduml

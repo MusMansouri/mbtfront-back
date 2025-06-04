@@ -1,0 +1,93 @@
+
+@startuml MLD_Mabote
+'------------------------------'
+'  Modèle Logique de Données
+'  (Tables relationnelles)
+'------------------------------'
+hide methods
+
+class users {
+  + id: int <<PK>>
+  + nom: varchar(100)
+  + prenom: varchar(100)
+  + email: varchar(100)
+  + password: varchar(255)
+  + role: varchar(50)
+  + telephone: varchar(30)
+  + createdAt: datetime
+  + updatedAt: datetime
+}
+
+class appointments {
+  + id: int <<PK>>
+  + date: date
+  + heure: time
+  + status: varchar(50)
+  + telephone: varchar(30)
+  + userInfo: json
+  + createdAt: datetime
+  + updatedAt: datetime
+  --
+  + userId: int <<FK>>
+  + ritualId: int <<FK>>
+}
+
+class rituals {
+  + id: int <<PK>>
+  + name: varchar(100)
+  + description: text
+  + longDescription: text
+  + steps: json
+  + duration: int
+  + price: decimal(10,2)
+  + image: varchar(255)
+  + createdAt: datetime
+  + updatedAt: datetime
+}
+
+class feedbacks {
+  + id: int <<PK>>
+  + comment: text
+  + photo: varchar(255)
+  + createdAt: datetime
+  + updatedAt: datetime
+  --
+  + userId: int <<FK>>
+}
+
+class availabilities {
+  + id: int <<PK>>
+  + date: date
+  + startTime: time
+  + endTime: time
+  + isBooked: boolean
+  + createdAt: datetime
+  + updatedAt: datetime
+}
+
+class conseils {
+  + id: int <<PK>>
+  + title: varchar(100)
+  + content: text
+  + category: varchar(100)
+  + img: varchar(255)
+  + createdAt: datetime
+  + updatedAt: datetime
+}
+
+class contact_messages {
+  + id: int <<PK>>
+  + first_name: varchar(255)
+  + last_name: varchar(255)
+  + email: varchar(255)
+  + tel: varchar(50)
+  + message: text
+  + createdAt: datetime
+  + updatedAt: datetime
+}
+
+' Relations (FK)
+appointments --> users : userId
+appointments --> rituals : ritualId
+feedbacks --> users : userId
+@enduml

@@ -1,0 +1,13 @@
+@startuml
+actor Utilisateur as U
+participant "Interface Web" as UI
+participant "Serveur" as Server
+database "Base de Données" as DB
+
+U -> UI : Rédige un commentaire \net ajoute éventuellement une photo
+UI -> Server : Soumet le feedback utilisateur
+Server -> DB : **Insérer** le feedback (commentaire, photo, userId)
+DB --> Server : Confirmation d'enregistrement
+Server --> UI : Confirmation de soumission du feedback
+UI --> U : Message de remerciement affiché \nou mise à jour de la liste des avis
+@enduml

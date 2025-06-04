@@ -1,0 +1,47 @@
+@startuml
+entity "User" as User {
+   * id [PK]
+   -- 
+   nom, prénom, email, password, role, telephone, createdAt, updatedAt
+}
+entity "Appointment" as Appointment {
+   * id [PK]
+   --
+   date, heure, status, telephone, userInfo, createdAt, updatedAt
+   userId [FK], ritualId [FK]
+}
+entity "Ritual" as Ritual {
+   * id [PK]
+   --
+   name, description, longDescription, steps, duration, price, image, createdAt, updatedAt
+}
+entity "Feedback" as Feedback {
+   * id [PK]
+   --
+   comment, photo, createdAt, updatedAt
+   userId [FK], ritualId [FK]
+}
+entity "ContactMessage" as ContactMessage {
+   * id [PK]
+   --
+   first_name, last_name, email, tel, message, createdAt, updatedAt
+   userId [FK]
+}
+entity "Availability" as Availability {
+   * id [PK]
+   --
+   date, startTime, endTime, isBooked, createdAt, updatedAt
+}
+entity "Conseil" as Conseil {
+   * id [PK]
+   --
+   title, content, category, img, createdAt, updatedAt
+}
+
+' Relations entre entités avec cardinalités (notation IE Crow's Foot)
+User ||--o{ Appointment : "réserve"
+Ritual ||--o{ Appointment
+User ||--o{ Feedback : "soumet"
+Ritual ||--o{ Feedback : "concerne"
+User ||--o{ ContactMessage : "écrit"
+@enduml

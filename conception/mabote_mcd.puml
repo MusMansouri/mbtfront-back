@@ -1,0 +1,138 @@
+@startuml
+allowmixing
+' =========================
+'  MCD 
+' =========================
+title MCD – bdd (MABÔTÉ)
+skinparam backgroundColor #f9f6f2
+skinparam entity {
+  BackgroundColor #fff6f1
+  BorderColor #b96c53
+  FontColor #b96c53
+  FontSize 15
+  FontName Arial
+  RoundCorner 20
+}
+skinparam rectangle {
+  BackgroundColor #ffeaea
+  BorderColor #b96c53
+  FontColor #b96c53
+  FontSize 14
+  FontName Arial
+  RoundCorner 10
+}
+skinparam ArrowColor #b96c53
+skinparam ArrowFontColor #b96c53
+skinparam ArrowFontSize 13
+skinparam ArrowFontName Arial
+skinparam linetype ortho
+hide stereotype
+left to right direction
+
+' --- UTILISATEURS & MESSAGES ---
+entity "👤 User" as User {
+  * id : INT
+  nom
+  prenom
+  email
+  password
+  role
+  telephone
+  createdAt
+  updatedAt
+}
+entity "✉️ ContactMessage" as CMsg {
+  * id : INT
+  first_name
+  last_name
+  email
+  tel
+  message
+  createdAt
+  updatedAt
+  userId
+}
+note right of CMsg : Utilisateurs & Messages
+
+' --- RITUELS & CONSEILS ---
+entity "🕯 Ritual" as Ritual {
+  * id : INT
+  name
+  description
+  longDescription
+  steps
+  duration
+  price
+  image
+  createdAt
+  updatedAt
+}
+entity "💡 Conseil" as Conseil {
+  * id : INT
+  title
+  content
+  category
+  img
+  createdAt
+  updatedAt
+}
+note right of Conseil : Rituels & Conseils
+
+' --- RENDEZ-VOUS & DISPONIBILITÉS ---
+entity "📅 Appointment" as Appt {
+  * id : INT
+  date
+  heure
+  status
+  telephone
+  userInfo
+  createdAt
+  updatedAt
+  userId
+  ritualId
+}
+entity "⏰ Availability" as Avail {
+  * id : INT
+  date
+  startTime
+  endTime
+  isBooked
+  createdAt
+  updatedAt
+}
+note right of Avail : Rendez-vous & Disponibilités
+
+' --- FEEDBACKS ---
+entity "⭐ Feedback" as Fbk {
+  * id : INT
+  comment
+  photo
+  createdAt
+  updatedAt
+  userId
+  ritualId
+}
+note right of Fbk : Feedbacks
+
+' --- RELATIONS (entités-relation carrées, bien séparées) ---
+rectangle "Réserve" as Reserve
+User    ||--o{ Reserve : "1,1"
+Appt    ||--o{ Reserve : "0,N"
+
+rectangle "Concerne" as Concerne
+Appt    ||--o{ Concerne : "1,1"
+Ritual  ||--o{ Concerne : "0,N"
+
+rectangle "Soumet" as Soumet
+User    ||--o{ Soumet : "1,1"
+Fbk     ||--o{ Soumet : "0,N"
+
+rectangle "FeedbackSur" as FeedbackSur
+Fbk     ||--o{ FeedbackSur : "1,1"
+Ritual  ||--o{ FeedbackSur : "0,N"
+
+rectangle "Message" as Message
+User    ||--o{ Message : "1,1"
+CMsg    ||--o{ Message : "0,N"
+
+@enduml

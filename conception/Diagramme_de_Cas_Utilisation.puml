@@ -1,0 +1,24 @@
+@startuml
+left to right direction
+actor "Visiteur" as Visiteur
+actor "Utilisateur" as Utilisateur
+actor "Admin" as Admin
+
+rectangle "Application MABÔTÉ" {
+   Visiteur -- (Consulter les rituels)
+   Visiteur -- (Consulter les conseils)
+   Visiteur -- (Envoyer un message de contact)
+   Visiteur -- (Réserver un rendez-vous)
+
+   Utilisateur -- (Réserver un rendez-vous)
+   Utilisateur -- (Consulter ses rendez-vous)
+   Utilisateur -- (Donner un feedback)
+   Utilisateur -- (Modifier son profil)
+
+   Admin -- (Gérer les rendez-vous)
+   Admin -- (Gérer les utilisateurs)
+   Admin -- (Gérer les rituels)
+   Admin -- (Gérer les conseils)
+   Admin -- (Lire/Supprimer les messages de contact)
+}
+@enduml

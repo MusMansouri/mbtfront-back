@@ -1,0 +1,16 @@
+@startuml
+actor Utilisateur as U
+participant "Interface Web" as UI
+participant "Serveur" as Server
+database "Base de Données" as DB
+
+U -> UI : Choisit une date, un horaire \net un rituel puis valide la demande
+UI -> Server : Requête de création de rendez-vous
+Server -> DB : **Vérifier** disponibilité du créneau
+DB --> Server : Créneau disponible
+Server -> DB : **Insérer** le nouveau rendez-vous (détails + userId/ritualId)
+Server -> DB : Marquer le créneau comme réservé (`isBooked`=1)
+DB --> Server : Confirmation d'insertion OK
+Server --> UI : Confirmation de réservation
+UI --> U : Rendez-vous confirmé (message affiché à l’utilisateur)
+@enduml
