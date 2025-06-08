@@ -8,7 +8,7 @@ const options = {
     info: {
       title: 'Mabote API',
       version: '1.0.0',
-      description: 'Documentation de l’API Mabote (Node.js/Express)'
+      description: 'Documentation de API Mabote (Node.js/Express)'
     },
     servers: [
       {
