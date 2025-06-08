@@ -1,29 +1,81 @@
-# Rapport de stage – Projet MABOTE (Prise de rendez-vous pour institut de beauté)
+<!-- PAGE DE GARDE EMBELLIE -->
+<div align="center" style="border:3px solid #b6a3e6; border-radius:18px; padding:44px 24px 36px 24px; margin-bottom:48px; background: linear-gradient(135deg, #f9f6ff 60%, #e3eaff 100%); box-shadow: 0 4px 24px #e0e0e0;">
+  <img src="./frontend/src/assets/logo.png" alt="Institut de beauté" width="96" style="margin-bottom: 16px;" />
+  <h1 style="font-size:2.8em; margin-bottom:0.2em; color:#7c3aed; letter-spacing:2px;">💅 Rapport de stage</h1>
+  <h2 style="color:#4B9CD3; margin-top:0; font-size:2em;">Projet <b>MABÔTÉ</b></h2>
+  <h3 style="font-weight:normal; color:#888; margin-bottom: 1.5em;">Application de prise de rendez-vous pour institut de beauté</h3>
+  <table style="margin:auto; font-size:1.1em;">
+    <tr>
+      <td style="padding: 6px 16px;"><b>👤 Auteur :</b></td>
+      <td style="padding: 6px 16px;">Mustapha Mansouri</td>
+    </tr>
+    <tr>
+      <td style="padding: 6px 16px;"><b>🎓 Formation :</b></td>
+      <td style="padding: 6px 16px;">Concepteur Développeur d’Applications (CDA)</td>
+    </tr>
+    <tr>
+      <td style="padding: 6px 16px;"><b>🏢 Entreprise d’accueil :</b></td>
+      <td style="padding: 6px 16px;">Institut de beauté MABÔTÉ<br>
+    </tr>
+    <tr>
+      <td style="padding: 6px 16px;"><b>🧑‍🏫 Tuteur de stage :</b></td>
+      <td style="padding: 6px 16px;">Marine Guilbert</td>
+    </tr>
+    <tr>
+      <td style="padding: 6px 16px;"><b>📅 Période :</b></td>
+      <td style="padding: 6px 16px;">02/05/2025 - 02/06/2025</td>
+    </tr>
+    <tr>
+      <td style="padding: 6px 16px;"><b>🗓️ Année :</b></td>
+      <td style="padding: 6px 16px;">2025</td>
+    </tr>
+  </table>
+  <div style="margin-top:2.5em; color:#7c3aed; font-size:1.2em;">
+    <em>« Digitaliser la beauté, simplifier la gestion, valoriser l’expérience client. »</em>
+  </div>
+</div>
 
-## Table des matières
+---
 
-1. [Résumé du projet](#résumé-du-projet)
-2. [Cahier des charges détaillé](#cahier-des-charges-détaillé)
-3. [Analyse des compétences couvertes](#analyse-des-compétences-couvertes)
-4. [Fonctionnalités principales de l’application](#fonctionnalités-principales-de-lapplication)
+<!-- Saut de page pour impression -->
+<div style="page-break-after: always;"></div>
+
+# 🗂️ Table des matières
+
+1. [Résumé du projet](#resume-du-projet)
+2. [Cahier des charges détaillé](#cahier-des-charges-detaille)
+3. [Analyse des compétences couvertes](#analyse-des-competences-couvertes)
+4. [Fonctionnalités principales de l’application](#fonctionnalites-principales-de-lapplication)
 5. [Architecture technique du projet](#architecture-technique-du-projet)
-6. [Démarche de développement et méthodologie](#démarche-de-développement-et-méthodologie)
+6. [Démarche de développement et méthodologie](#demarche-de-developpement-et-methodologie)
 7. [Livrables du projet et maquettes](#livrables-du-projet-et-maquettes)
-8. [Modélisation de la base de données](#modélisation-de-la-base-de-données)
-9. [Spécifications techniques et logique de développement](#spécifications-techniques-et-logique-de-développement)
-10. [Sécurité de l’application](#sécurité-de-lapplication)
-11. [Validation des données](#validation-des-données)
-12. [Tests et assurance qualité](#tests-et-assurance-qualité)
-13. [Intégration continue et configuration du déploiement](#intégration-continue-et-configuration-du-déploiement)
-14. [Plan de déploiement futur](#plan-de-déploiement-futur)
-15. [Veille technologique et pistes d’évolution](#veille-technologique-et-pistes-dévolution)
+8. [Modélisation de la base de données](#modelisation-de-la-base-de-donnees)
+9. [Spécifications techniques et logique de développement](#specifications-techniques-et-logique-de-developpement)
+10. [Sécurité de l’application](#securite-de-lapplication)
+11. [Validation des données](#validation-des-donnees)
+12. [Tests et assurance qualité](#tests-et-assurance-qualite)
+13. [Intégration continue et configuration du déploiement](#integration-continue-et-configuration-du-deploiement)
+14. [Plan de déploiement futur](#plan-de-deploiement-futur)
+15. [Veille technologique et pistes d’évolution](#veille-technologique-et-pistes-devolution)
 16. [Conclusion et remerciements](#conclusion-et-remerciements)
 
-## Résumé du projet
+---
 
-Le projet MABOTE est une application web de prise de rendez-vous en ligne et de gestion de contenus développée dans le cadre d’un stage de fin de formation CDA (Concepteur Développeur d’Applications). Il s’agit de doter un institut de beauté d’un outil numérique permettant à ses clients de planifier des rendez-vous 24h/24 et 7j/7, tout en offrant à l’administrateur du salon la possibilité de gérer aisément son catalogue de services et les informations affichées sur le site. Concrètement, le système comprend une interface client pour la réservation de soins (massages, esthétiques, etc.) et la consultation d’informations, ainsi qu’une interface d’administration sécurisée pour la gestion des rendez-vous et du contenu éditorial (textes de présentation, liste des prestations, actualités...). Le développement a été réalisé en utilisant une architecture web moderne, avec une application front-end en Vue.js consommant une API RESTful créée avec Node.js/Express et connectée à une base de données MySQL via l’ORM Sequelize. Ce choix technique assure une séparation claire du client et du serveur, facilitant la maintenance et l’évolutivité de l’application. Le projet se conforme ainsi aux besoins de l’institut MABOTÉ (basé à HEM) qui ne proposait jusque-là que des réservations par téléphone, en lui apportant une solution en ligne efficace. En résumé, MABOTE offre une solution complète pour digitaliser le processus de réservation d’un salon de beauté tout en permettant une gestion autonome du contenu du site par l’entreprise. Le présent rapport détaille les aspects fonctionnels, techniques et organisationnels du projet, ainsi que les compétences mises en œuvre durant sa réalisation.
+> ℹ️ **Astuce** : Cliquez sur un titre dans la table des matières pour accéder directement à la section correspondante.
 
-## Cahier des charges détaillé
+---
+
+<a id="resume-du-projet"></a>
+
+## 1. Résumé du projet
+
+Le projet MABÔTÉ est une application web de prise de rendez-vous en ligne et de gestion de contenus développée dans le cadre d’un stage de fin de formation CDA (Concepteur Développeur d’Applications). Il s’agit de doter un institut de beauté d’un outil numérique permettant à ses clients de planifier des rendez-vous 24h/24 et 7j/7, tout en offrant à l’administrateur du salon la possibilité de gérer aisément son catalogue de services et les informations affichées sur le site. Concrètement, le système comprend une interface client pour la réservation de soins (massages, esthétiques, etc.) et la consultation d’informations, ainsi qu’une interface d’administration sécurisée pour la gestion des rendez-vous et du contenu éditorial (textes de présentation, liste des prestations, actualités...). Le développement a été réalisé en utilisant une architecture web moderne, avec une application front-end en Vue.js consommant une API RESTful créée avec Node.js/Express et connectée à une base de données MySQL via l’ORM Sequelize. Ce choix technique assure une séparation claire du client et du serveur, facilitant la maintenance et l’évolutivité de l’application. Le projet se conforme ainsi aux besoins de l’institut MABOTÉ (basé à HEM) qui ne proposait jusque-là que des réservations par téléphone, en lui apportant une solution en ligne efficace. En résumé, MABÔTÉ offre une solution complète pour digitaliser le processus de réservation d’un salon de beauté tout en permettant une gestion autonome du contenu du site par l’entreprise. Le présent rapport détaille les aspects fonctionnels, techniques et organisationnels du projet, ainsi que les compétences mises en œuvre durant sa réalisation.
+
+---
+
+<a id="cahier-des-charges-detaille"></a>
+
+# 📋 Cahier des charges détaillé
 
 Contexte : L’institut de beauté MABOTÉ est un établissement indépendant souhaitant moderniser la gestion de son planning et améliorer son service client. Jusqu’alors, les prises de rendez-vous se faisaient uniquement par téléphone, entraînant des contraintes d’horaires d’ouverture et un risque de double-réservation. De plus, la gérante souhaitait pouvoir mettre à jour facilement le site (par exemple les descriptions des soins, les tarifs ou les promotions du moment) sans faire appel à un prestataire technique. Le projet est né de ce besoin de digitalisation : proposer un portail web où les clients peuvent réserver en ligne et où le contenu du site peut être administré sans connaissances techniques.
 
@@ -36,9 +88,13 @@ Prévoir l’extensibilité du système pour de futures évolutions (par exemple
 
 Contraintes : Le projet a été réalisé sur une durée limitée (stage d’un mois), ce qui a imposé des choix techniques efficaces et un périmètre fonctionnel réaliste. Aucun budget n’était prévu pour des licences logicielles coûteuses : les solutions retenues devaient donc être open-source ou gratuites. Par ailleurs, l’absence d’équipe dédiée à la maintenance technique côté client imposait de minimiser la complexité du déploiement et de documenter clairement la procédure pour une mise en production future. Enfin, du point de vue légal, il fallait respecter le RGPD pour la gestion des données clients (politique de confidentialité, consentement pour le stockage des informations).
 
-## Analyse des compétences couvertes
+---
 
-Le développement du projet MABOTE a mobilisé un large éventail de compétences conformes au référentiel du titre professionnel CDA, couvrant l’ensemble du cycle de vie d’une application. Voici les principales compétences mises en œuvre et leur lien avec le projet :
+<a id="analyse-des-competences-couvertes"></a>
+
+# 🛠️ Analyse des compétences couvertes
+
+Le développement du projet MABÔTÉ a mobilisé un large éventail de compétences conformes au référentiel du titre professionnel CDA, couvrant l’ensemble du cycle de vie d’une application. Voici les principales compétences mises en œuvre et leur lien avec le projet :
 
 • Analyse du besoin et rédaction du cahier des charges : J’ai débuté par une analyse détaillée des besoins de l’institut. Cela inclut la récolte des exigences (fonctions attendues, contraintes métiers), puis la rédaction d’un cahier des charges structuré (contexte, objectifs, fonctionnalités, maquettes). Cette étape correspond à la compétence “Analyser les besoins et maquetter une application” du référentiel. En pratique, des maquettes d’interface ont été conçues (sur papier et via FIGMA) pour valider l’ergonomie avant le développement.
 
@@ -56,11 +112,15 @@ Le développement du projet MABOTE a mobilisé un large éventail de compétence
 
 • Déploiement et documentation : En anticipation de la mise en production, j’ai rédigé une documentation technique (expliquant l’installation, la configuration et le lancement de l’application) pour faciliter la tâche ultérieure de mise en production.
 
-En couvrant ainsi l’analyse, la conception, le développement front/back, la sécurité, les tests et la préparation au déploiement, le projet MABOTE a permis de mettre en pratique l’ensemble des compétences clés d’un Concepteur Développeur d’Applications. Cette transversalité m’a non seulement préparé à l’examen final, mais aussi donné une vue d’ensemble précieuse sur la conduite d’un projet logiciel complet.
+En couvrant ainsi l’analyse, la conception, le développement front/back, la sécurité, les tests et la préparation au déploiement, le projet MABÔTÉ a permis de mettre en pratique l’ensemble des compétences clés d’un Concepteur Développeur d’Applications. Cette transversalité m’a non seulement préparé à l’examen final, mais aussi donné une vue d’ensemble précieuse sur la conduite d’un projet logiciel complet.
 
-## Fonctionnalités principales de l’application
+---
 
-L’application MABOTE propose un ensemble de fonctionnalités répondant aux besoins identifiés. On peut distinguer les fonctionnalités côté client (front-office) de celles côté administrateur (back-office), toutes étant servies par la même API back-end.
+<a id="fonctionnalites-principales-de-lapplication"></a>
+
+# 🚀 Fonctionnalités principales de l’application
+
+L’application MABÔTÉ propose un ensemble de fonctionnalités répondant aux besoins identifiés. On peut distinguer les fonctionnalités côté client (front-office) de celles côté administrateur (back-office), toutes étant servies par la même API back-end.
 
 Côté client (front-office) : Les clients de l’institut accèdent à une interface web conviviale leur permettant:
 
@@ -82,11 +142,15 @@ Côté administrateur (back-office) : Un utilisateur administrateur (la gérante
 
 Fonctionnalités transverses : L’application inclut également des fonctionnalités techniques transversales : la recherche de disponibilités (le formulaire de réservation n’affiche que les créneaux libres, en interrogeant l’API), la notification par email (prévue pour informer le client de la confirmation ou annulation du rendez-vous, via un service SMTP tiers), et la gestion des erreurs utilisateur (messages d’alerte en cas de formulaire mal rempli, redirections en cas de page non trouvée, etc.). L’expérience utilisateur a été soignée afin de garantir une interface simple. En effet, une interface conviviale est l’une des caractéristiques essentielles d’un bon système de réservation en ligne ce principe a guidé le développement front-end (libellés clairs, feedback visuel après chaque action, design épuré). Par ailleurs, même si l’application est principalement web, l’approche mobile-first a été suivie pour le CSS, de sorte que le site est responsif et utilisable confortablement sur smartphone.
 
-En résumé, MABOTE fournit au client final une plateforme pour réserver facilement des rendez-vous à toute heure, tout en offrant à la propriétaire de l’institut un outil complet pour piloter son activité (agenda numérique et site web auto-administrable). Ces fonctionnalités couvrent les besoins initiaux exprimés, avec une ergonomie moderne et une architecture prête à évoluer pour de futures améliorations.
+En résumé, MABÔTÉ fournit au client final une plateforme pour réserver facilement des rendez-vous à toute heure, tout en offrant à la propriétaire de l’institut un outil complet pour piloter son activité (agenda numérique et site web auto-administrable). Ces fonctionnalités couvrent les besoins initiaux exprimés, avec une ergonomie moderne et une architecture prête à évoluer pour de futures améliorations.
 
-## Architecture technique du projet
+---
 
-L’architecture technique de MABOTE repose sur une séparation front-end / back-end typique des applications web modernes. Le schéma général est le suivant : Vue.js gère la partie frontale (côté client) et communique via HTTP avec une API REST implémentée en Node.js avec le framework Express, laquelle s’appuie sur Sequelize pour interagir avec une base de données MySQL. Cette architecture s’inscrit dans la tendance dite “SPA + API”, où une Single Page Application front-end dialogue avec un serveur d’API. Les principaux composants sont détaillés ci-dessous.
+<a id="architecture-technique-du-projet"></a>
+
+# 🏗️ Architecture technique du projet
+
+L’architecture technique de MABÔTÉ repose sur une séparation front-end / back-end typique des applications web modernes. Le schéma général est le suivant : Vue.js gère la partie frontale (côté client) et communique via HTTP avec une API REST implémentée en Node.js avec le framework Express, laquelle s’appuie sur Sequelize pour interagir avec une base de données MySQL. Cette architecture s’inscrit dans la tendance dite “SPA + API”, où une Single Page Application front-end dialogue avec un serveur d’API. Les principaux composants sont détaillés ci-dessous.
 
 • Front-end (Vue.js) : Vue.js a été choisi comme framework JavaScript pour construire l’interface utilisateur dynamique. Il s’agit d’un framework progressif, c’est-à-dire qu’il peut s’adopter de manière incrémentale et s’intègre bien à du code existant. Vue est réputé pour sa facilité de prise en main et sa réactivité concrètement, l’application front-end est une Single Page Application compilée, dont le routing interne est géré par Vue Router (permettant la navigation entre pages “Accueil”, “Réserver”, “Admin”, etc. sans rechargement complet). Le front-end appelle les endpoints de l’API via HTTP (utilisation d’Axios comme client HTTP) et met à jour la vue en fonction des réponses JSON reçues. Vuex a pu être utilisé pour stocker l’état global (par ex., information de l’utilisateur admin connecté). Le code front-end est organisé en composants Vue, chacun correspondant à une portion de l’interface (formulaire de RDV, liste des rendez-vous, formulaire d’édition de contenu, etc.), ce qui favorise la réutilisation et la maintenance. L’ensemble du front-end est compilé en un bundle static (fichiers JS/CSS optimisés) lors du build de production.
 
@@ -99,9 +163,13 @@ Modèles pour les interactions avec la base de données via Sequelize. L’API s
 
 • Environnement de développement : Le projet a utilisé Node v14+ (LTS) et Vue 3 (version CLI Vue 3). Durant le développement, un serveur de développement Vue (Webpack dev server) tournait en parallèle du serveur Express, avec configuration de CORS pour autoriser le front (http://localhost:8080) à appeler l’API (http://localhost:3000). En production, l’idée est de servir les fichiers statiques compilés de Vue directement via un middleware Express distinct, tout en faisant pointer l’API sur le même domaine pour éviter les soucis de CORS.
 
-En somme, l’architecture technique de MABOTE est cohérente avec les standards actuels : un front-end riche SPA pour l’expérience utilisateur, une API REST Node/Express performante pour la logique métier, et une base SQL robuste pour la persistance, le tout orchestré de manière asynchrone. Ce type d’architecture, souvent qualifié de stack JavaScript full-stack, présente l’avantage d’unifier le langage (JavaScript à la fois côté client et serveur), ce qui facilite la compréhension globale du projet et la réutilisation de certaines structures de données. Le schéma modulaire adopté permettra également de faire évoluer chaque couche indépendamment (par exemple, il serait envisageable plus tard de développer une application mobile native consommant la même API, ou de remplacer la base MySQL par un autre SGBD sans changer la logique métier, Sequelize faisant abstraction de la couche SQL).
+En somme, l’architecture technique de MABÔTÉ est cohérente avec les standards actuels : un front-end riche SPA pour l’expérience utilisateur, une API REST Node/Express performante pour la logique métier, et une base SQL robuste pour la persistance, le tout orchestré de manière asynchrone. Ce type d’architecture, souvent qualifié de stack JavaScript full-stack, présente l’avantage d’unifier le langage (JavaScript à la fois côté client et serveur), ce qui facilite la compréhension globale du projet et la réutilisation de certaines structures de données. Le schéma modulaire adopté permettra également de faire évoluer chaque couche indépendamment (par exemple, il serait envisageable plus tard de développer une application mobile native consommant la même API, ou de remplacer la base MySQL par un autre SGBD sans changer la logique métier, Sequelize faisant abstraction de la couche SQL).
 
-## Démarche de développement et méthodologie
+---
+
+<a id="demarche-de-developpement-et-methodologie"></a>
+
+# 🔄 Démarche de développement et méthodologie
 
 Pour mener à bien le projet dans les délais impartis, j’ai adopté une démarche de développement itérative et incrémentale, sans méthodologie formelle imposée (pas de Scrum complet ni d’outil tel que Jira, étant donné la petite taille de l’équipe – en l’occurrence, moi-même). Néanmoins, l’approche suivie s’inspire des bonnes pratiques Agiles en restant flexible et centrée sur les priorités métier.
 
@@ -123,9 +191,13 @@ Documentation au fil de l’eau : J’ai veillé à documenter mon code de mani�
 
 En résumé, la méthodologie adoptée a été pragmatique : itérative, centrée sur les fonctionnalités clés et la qualité du code, avec une forte discipline personnelle pour compenser le fait de ne pas avoir d’équipe ou de chef de projet imposant des méthodes. Cette approche a bien fonctionné puisque le projet a pu être mené à terme dans les temps, avec un produit final correspondant au cahier de charges initial. La flexibilité m’a permis de réagir aux imprévus (bugs complexes demandant plus de temps, légères évolutions d’exigences) tout en maintenant le cap sur l’objectif principal. En fin de compte, cette expérience m’a également appris à m’auto-organiser et à appliquer de façon autonome les principes Agiles sur un projet à petite échelle.
 
-## Livrables du projet et maquettes
+---
 
-Plusieurs livrables ont été produits au cours et à l’issue du projet MABOTE :
+<a id="livrables-du-projet-et-maquettes"></a>
+
+# 📦 Livrables du projet et maquettes
+
+Plusieurs livrables ont été produits au cours et à l’issue du projet MABÔTÉ :
 
 • Le code source complet de l’application : cela comprend deux modules principaux – le front­ end Vue.js (structure du projet Vue CLI avec composants, pages, store, etc.) et le back-end Node.js (structure Express avec routes, contrôleurs, modèles Sequelize). Le code est hébergé sur un dépôt GitHub privé, permettant le suivi de version. Un effort particulier a été mis sur la lisibilité du code et les commentaires. Le code constitue le livrable principal, celui qui sera déployé en production.
 
@@ -144,11 +216,15 @@ builder le front ( npm run build ). Ce guide a pour objectif de faciliter la mis
 
 En somme, les livrables couvrent à la fois les artefacts techniques (code, diagrammes, tests) et les documents de support (cahier des charges, guide utilisateur, documentation d’installation). Cette pluralité garantit que le projet n’est pas qu’un ensemble de fichiers de code, mais bien un ensemble cohérent prêt à être évalué et utilisé. Le fait d’avoir préparé ces livrables durant le projet a facilité la soutenance et la compréhension par des tiers. Par exemple, la présence de maquettes a aidé le tuteur à se projeter dans l’interface attendue, et la collection Postman livrée permet de rapidement vérifier les fonctionnalités de l’API sans même avoir l’interface front.
 
-## Modélisation de la base de données
+---
 
-La base de données relationnelle de MABOTE a été conçue pour stocker toutes les informations nécessaires au fonctionnement du système : utilisateurs administrateurs, clients, rendez-vous, services proposés, et contenus éditoriaux. La conception s’est faite en trois étapes : MCD (Modèle Conceptuel de Données), MLD (Modèle Logique de Données) et MPD (Modèle Physique de Données).
+<a id="modelisation-de-la-base-de-donnees"></a>
 
-Modèle Conceptuel de Données (MCD) : Le MCD identifie les entités métier et les relations entre elles, sans considération technique. Pour MABOTE, les entités principales identifiées sont :
+# 🗄️ Modélisation de la base de données
+
+La base de données relationnelle de MABÔTÉ a été conçue pour stocker toutes les informations nécessaires au fonctionnement du système : utilisateurs administrateurs, clients, rendez-vous, services proposés, et contenus éditoriaux. La conception s’est faite en trois étapes : MCD (Modèle Conceptuel de Données), MLD (Modèle Logique de Données) et MPD (Modèle Physique de Données).
+
+Modèle Conceptuel de Données (MCD) : Le MCD identifie les entités métier et les relations entre elles, sans considération technique. Pour MABÔTÉ, les entités principales identifiées sont :
 
 - Utilisateur : représentant soit un client (personne prenant rendez-vous) soit l’administrateur du site. Les attributs incluent nom, email, mot de passe (chiffré), rôle (par exemple “ADMIN” ou “CLIENT”).
 - RendezVous : représentant un rendez-vous pris pour un service à une date donnée. Attributs :
@@ -211,7 +287,11 @@ En conclusion, la base de données a été conçue de manière normale (pas de r
 
 Ainsi, la cohérence du modèle de données assure une base solide au fonctionnement de l’application. Les diagrammes MLD/MPD reconstitués à partir du code confirment que les contraintes ont bien été appliquées dans MySQL via Sequelize. Cette étape de modélisation, parfois négligée dans les petits projets, s’est révélée précieuse pour éviter les écueils (par exemple, clarifier dès le départ comment on stocke l’information client relative aux rendez-vous).
 
-## Spécifications techniques et logique de développement
+---
+
+<a id="specifications-techniques-et-logique-de-developpement"></a>
+
+# ⚙️ Spécifications techniques et logique de développement
 
 Cette section détaille certaines spécifications techniques notables et décrit la logique de développement pour les principales fonctionnalités, notamment les opérations CRUD (Create, Read, Update, Delete) sur les différentes entités. L’implémentation s’est attachée à respecter les standards du développement web (architecture RESTful, code structuré, gestion des erreurs) afin de produire une application maintenable.
 
@@ -233,7 +313,7 @@ Principaux endpoints et logique CRUD : Pour illustrer, détaillons la logique de
 
 • Création d’un rendez-vous (POST /api/rendezvous) : Ce endpoint est appelé par le formulaire de réservation client. La fonction contrôleur createRdv récupère req.body contenant par exemple { nomClient, emailClient, telephoneClient, idService, dateHeureSouhaitee } . Cas sans compte client : le contrôleur va soit créer un nouvel utilisateur de type “CLIENT” avec ces infos ou utiliser un utilisateur “générique” (selon le choix fait pour gérer les clients, cf. section BD). Ensuite, il vérifie si le créneau est disponible : pour cela, on interroge la base via Sequelize RendezVous.findOne({ where: { date_heure:dateHeureSouhaitee }}).
 
-• Lecture des rendez-vous (GET /api/rendezvous) : Côté admin, ce endpoint renvoie la liste de tous les rendez-vous à venir. Implémentation : la fonction contrôleur fait un findAll sur le modèle RendezVous en incluant éventuellement les associations (le service lié et l’utilisateur lié) pour avoir les noms au lieu des IDs. RendezVous.findAll({ include [Service, renvoyer que les futurs ( WHERE date_heure >= Sequelize permet par exemple User] }) . On peut filtrer par date pour NOW() ). Les résultats sont triés par date. La réponse JSON contient un tableau d’objets RendezVous avec tous les détails. Côté client, un endpoint GET / api/mes-rendezvous pourrait être prévu si on gérait des comptes clients.
+• Lecture des rendez-vous (GET /api/rendezvous) : Côté admin, ce endpoint renvoie la liste de tous les rendez-vous à venir. Implémentation : la fonction contrôleur fait un findAll sur le modèle RendezVous en incluant éventuellement les associations (le service lié et l’utilisateur lié) pour avoir les noms au lieu des IDs. RendezVous.findAll({ include [Service, renvoyer que les futurs ( WHERE date_heure >= Sequelize permet par exemple User] }) . On peut filtrer par date. La réponse JSON contient un tableau d’objets RendezVous avec tous les détails. Côté client, un endpoint GET / api/mes-rendezvous pourrait être prévu si on gérait des comptes clients.
 
 • Mise à jour d’un rendez-vous (PUT /api/rendezvous/:id) : Utilisée par l’admin pour, par exemple, changer le statut en “CONFIRMÉ” ou pour modifier les détails (rarement nécessaire, éventuellement décaler l’horaire sur demande client). Le contrôleur updateRdv(req,res) commence par vérifier que l’utilisateur authentifié est admin (middleware d’authentification + vérification du rôle). Puis, via RendezVous.findByPk(id) on récupère le RDV, on applique les modifications reçues (req.body peut contenir par ex { statut: CONFIRME } ), puis on enregistre rdv.save() ou via update .
 
@@ -378,9 +458,13 @@ const actions = {
 };
 ```
 
-## Sécurité de l’application
+---
 
-La sécurité est un aspect primordial du projet MABOTE, notamment parce que l’application gère des données personnelles (informations de clients, rendez-vous) et que l’interface d’administration doit être strictement réservée à la gérante. Plusieurs mesures de sécurité ont été mises en œuvre, couvrant l’authentification, la protection des mots de passe, la sécurisation des communications client-serveur et la prévention des vulnérabilités web courantes.
+<a id="securite-de-lapplication"></a>
+
+# 🔒 Sécurité de l’application
+
+La sécurité est un aspect primordial du projet MABÔTÉ, notamment parce que l’application gère des données personnelles (informations de clients, rendez-vous) et que l’interface d’administration doit être strictement réservée à la gérante. Plusieurs mesures de sécurité ont été mises en œuvre, couvrant l’authentification, la protection des mots de passe, la sécurisation des communications client-serveur et la prévention des vulnérabilités web courantes.
 
 Authentification par JSON Web Token (JWT) : Pour l’accès à l’interface d’administration et aux endpoints sensibles de l’API, j’ai implémenté une authentification stateless via des JWT. Lorsqu’un admin se connecte avec son email et mot de passe (endpoint /api/auth/login), le serveur vérifie les identifiants et renvoie un jeton JWT signé contenant l’identifiant de l’utilisateur et son rôle. Un JWT (JSON Web Token) est “un moyen compact et autonome de transmettre de manière sécurisée des informations entre deux parties sous forme d’objet JSON, signé numériquement” . Ce jeton sert de preuve d’authentification et doit être envoyé par le client dans le header Authorization de chaque requête suivante (Bearer <token>). Côté serveur, un middleware d’authentification intercepte les requêtes entrantes : il vérifie la présence et la validité du JWT (en utilisant la librairie jsonwebtoken). Si le token est valide, le middleware extrait les informations (id user, rôle) et les attache à l’objet requête (req.user = { id, role} ) puis laisse passer la requête. Sinon, il renvoie une réponse 401 Unauthorized. Ce mécanisme garantit que seules les personnes authentifiées peuvent accéder aux routes protégées (comme la liste des rendez-vous, la création/modification des services, etc.). Le JWT étant signé (avec un secret stocké côté serveur), il n’est pas falsifiable sans la clé secrète.
 
@@ -388,7 +472,7 @@ Protection des mots de passe avec Bcrypt : Aucune donnée sensible n’est stock
 
 Helmet et sécurisation des en-têtes HTTP : Sur le serveur Express, j’ai intégré le middleware Helmet dès le démarrage de l’app. Helmet configure automatiquement un ensemble d’en-têtes HTTP de sécurité pour protéger l’application de vulnérabilités web connues. Par exemple, il active Content­ Security-Policy (pour prévenir certaines attaques XSS en restreignant les sources de scripts), X-Frame- Options: DENY (pour empêcher le clickjacking en interdisant d’inclure le site dans une frame), X-XSS- Protection (pour activer les filtres XSS des navigateurs), etc. Comme le dit la documentation Express, “Helmet vous aide à protéger votre application de certaines des vulnérabilités bien connues du Web en configurant de manière appropriée des en-têtes HTTP”. En utilisant Helmet avec sa configuration par défaut, on bénéficie d’une couche de sécurité supplémentaire sans effort. Cela réduit la surface d’attaque aux vecteurs classiques.
 
-Contrôle d’accès et autorisations : Au-delà de l’authentification, il est crucial de gérer qui peut faire quoi. Dans MABOTE, le rôle “ADMIN” est le seul autorisé à accéder aux routes de gestion (rendez-vous, services, contenus). J’ai donc implémenté un middleware d’autorisation qui, après authentification JWT, vérifie req.user.role . Si le rôle n’est pas admin sur une route sensible, on renvoie 403 Forbidden. Cela évite qu’un utilisateur mal intentionné (même authentifié en client) appelle des endpoints critiques. Actuellement, seuls les admins ont des comptes, donc ce check est surtout là par précaution pour l’avenir.
+Contrôle d’accès et autorisations : Au-delà de l’authentification, il est crucial de gérer qui peut faire quoi. Dans MABÔTÉ, le rôle “ADMIN” est le seul autorisé à accéder aux routes de gestion (rendez-vous, services, contenus). J’ai donc implémenté un middleware d’autorisation qui, après authentification JWT, vérifie req.user.role . Si le rôle n’est pas admin sur une route sensible, on renvoie 403 Forbidden. Cela évite qu’un utilisateur mal intentionné (même authentifié en client) appelle des endpoints critiques. Actuellement, seuls les admins ont des comptes, donc ce check est surtout là par précaution pour l’avenir.
 
 Prévention des injections SQL et XSS : L’utilisation de l’ORM Sequelize offre une bonne protection contre les injections SQL. En effet, quand on passe des paramètres (par ex where: { email: emailEntreParUtilisateur } ), Sequelize se charge d’échapper correctement les valeurs. Cela évite qu’un utilisateur injecte du SQL malicieux via un champ de formulaire. De plus, tous les endroits où on utilise du SQL brut (rarement, sauf peut-être une ou deux requêtes spécifiques) on fait attention à utiliser les bind parameters fournis par Sequelize plutôt que de concaténer des strings. Côté XSS (Cross­ Site Scripting), l’application est en grande partie protégée par le fait que les entrées utilisateur (nom, email, etc.) sont renvoyées au front uniquement à des endroits maîtrisés (et potentiellement encodés). Les templates Vue par défaut échappent les variables insérées dans le HTML, ce qui empêche l’interprétation de scripts injectés. De plus, Content-Security-Policy via Helmet ajoute une couche contre XSS.
 
@@ -396,9 +480,13 @@ Sécurité des communications : Pendant le développement, l’application tourn
 
 En conclusion, l’application intègre dès sa V1 un ensemble solide de mesures de sécurité alignées avec les bonnes pratiques du domaine. L’authentification est assurée de manière stateless et sécurisée via JWT, les mots de passe sont stockés de façon sûre grâce à Bcrypt, et l’application est protégée contre diverses attaques web grâce à Helmet et la validation des entrées. L’importance de la sécurité a été prise en compte à chaque étape du développement – par exemple, lors de la modélisation de la base (ne pas stocker de données en clair inutiles), lors du codage (ne jamais faire confiance aux données entrantes, toujours vérifier côté serveur). Cela réduit significativement les risques d’incidents et donne confiance au client quant à l’utilisation de l’outil en production. Bien sûr, la veille sécuritaire continuera et des audits pourront être faits, mais à ce stade, l’architecture et les choix réalisés posent des bases saines pour une application web sécurisée.
 
-## Validation des données
+---
 
-La validation des données entrantes est un aspect crucial pour assurer la qualité et la sécurité de l’application. Dans MABOTE, un soin particulier a été apporté à la validation des formulaires côté front-end pour une bonne expérience utilisateur, ainsi qu’à la validation côté back-end pour garantir l’intégrité des données en profondeur et prévenir les entrées malveillantes. En effet, “la validation d’entrée est le processus qui consiste à vérifier les données que les utilisateurs saisissent ou envoient à votre application, et à s’ assurer qu’elles sont correctes, complètes et sûres. Il s’agit d’une étape cruciale pour la sécurité web”.
+<a id="validation-des-donnees"></a>
+
+# ✅ Validation des données
+
+La validation des données entrantes est un aspect crucial pour assurer la qualité et la sécurité de l’application. Dans MABÔTÉ, un soin particulier a été apporté à la validation des formulaires côté front-end pour une bonne expérience utilisateur, ainsi qu’à la validation côté back-end pour garantir l’intégrité des données en profondeur et prévenir les entrées malveillantes. En effet, “la validation d’entrée est le processus qui consiste à vérifier les données que les utilisateurs saisissent ou envoient à votre application, et à s’ assurer qu’elles sont correctes, complètes et sûres. Il s’agit d’une étape cruciale pour la sécurité web”.
 
 Validation côté client (front) : Les formulaires présents dans l’interface (inscription/connexion admin, prise de rendez-vous, ajout de service, etc.) intègrent des validations immédiates pour guider l’utilisateur. Par exemple :
 
@@ -425,11 +513,15 @@ Protection contre les attaques via validation : La validation côté serveur aid
 
 Exemple concret de parcours de validation : Prenons la fonctionnalité de prise de rendez-vous : côté front, les champs sont vérifiés (par exemple, le champ date utilise un datepicker limitant aux dates possibles, le champ email utilise type=email etc.). Supposons qu’un utilisateur malicieux tente malgré tout d’envoyer une requête directe avec un email mal formaté et une date vide. Côté serveur, express-validator va attraper ces deux problèmes : “email invalide” et “date requise”. Le serveur renvoie alors une erreur 400 avec ces deux messages. Le front, qui fait l’appel, reçoit cette réponse et peut afficher un message global “Le formulaire contient des erreurs : email invalide; date manquante.”. Ainsi, même sans le front, le back ne laissera pas passer de données incohérentes.
 
-En somme, la stratégie de validation adoptée dans MABOTE est défensive en profondeur : le front améliore l’expérience utilisateur en attrapant les erreurs triviales, et le back s’assure systématiquement de la validité de toute donnée avant traitement ou stockage. Ceci rejoint la bonne pratique générale de ne jamais faire confiance aux entrées utilisateur et de tout vérifier côté serveur. Une telle rigueur évite non seulement des bugs (données manquantes ou mal formées qui provoqueraient des erreurs plus loin) mais aussi renforce la sécurité globale de l’application (beaucoup d’attaques étant rendues caduques par une bonne validation). C’est donc un investissement essentiel qui a été pris en compte dès le développement initial, plutôt que de le voir comme une amélioration ultérieure. À l’usage, cela se traduira par une application plus robuste face aux mauvaises manipulations ou tentatives inappropriées, et des retours d’information clairs pour les utilisateurs qui seraient amenés à corriger leur saisie.
+En somme, la stratégie de validation adoptée dans MABÔTÉ est défensive en profondeur : le front améliore l’expérience utilisateur en attrapant les erreurs triviales, et le back s’assure systématiquement de la validité de toute donnée avant traitement ou stockage. Ceci rejoint la bonne pratique générale de ne jamais faire confiance aux entrées utilisateur et de tout vérifier côté serveur. Une telle rigueur évite non seulement des bugs (données manquantes ou mal formées qui provoqueraient des erreurs plus loin) mais aussi renforce la sécurité globale de l’application (beaucoup d’attaques étant rendues caduques par une bonne validation). C’est donc un investissement essentiel qui a été pris en compte dès le développement initial, plutôt que de le voir comme une amélioration ultérieure. À l’usage, cela se traduira par une application plus robuste face aux mauvaises manipulations ou tentatives inappropriées, et des retours d’information clairs pour les utilisateurs qui seraient amenés à corriger leur saisie.
 
-## Tests et assurance qualité
+---
 
-Les tests occupent une place importante dans le cycle de développement du projet MABOTE, afin de garantir que chaque fonctionnalité implémentée fonctionne comme prévu et que l’ensemble de l’application est stable. Deux approches de test ont été utilisées : des tests manuels (principalement via Postman pour l’API et tests exploratoires de l’interface) et des tests automatisés (avec Jest côté back­ end).
+<a id="tests-et-assurance-qualite"></a>
+
+# 🧪 Tests et assurance qualité
+
+Les tests occupent une place importante dans le cycle de développement du projet MABÔTÉ, afin de garantir que chaque fonctionnalité implémentée fonctionne comme prévu et que l’ensemble de l’application est stable. Deux approches de test ont été utilisées : des tests manuels (principalement via Postman pour l’API et tests exploratoires de l’interface) et des tests automatisés (avec Jest côté back­ end).
 
 Tests manuels de l’API avec Postman : Durant le développement, j’ai régulièrement utilisé l’outil Postman pour vérifier le comportement des endpoints de l’API. Postman est un logiciel très pratique pour construire et envoyer des requêtes HTTP et observer les réponses, sans passer par l’interface utilisateur frontale. J’ai créé une collection de requêtes regroupant tous les appels importants : authentification, création de rendez-vous, récupération de rendez-vous, etc. Pour chaque requête, j’ai préparé plusieurs scénarios : des cas valides (ex: créer un rendez-vous avec des données correctes) et des cas erreurs (ex: tenter de créer un rendez-vous sur un créneau déjà occupé. À l’aide de Postman, j’ai pu itérer rapidement en appelant l’API à chaque modification du code serveur et en vérifiant la conformité des réponses (codes HTTP, format JSON, contenu). Cela a permis de détecter et corriger de nombreux problèmes en amont : par exemple, j’ai ajusté les messages d’erreur pour qu’ils soient plus explicites, j’ai corrigé une erreur de logique où un rendez-vous pouvait être créé en double faute d’un bon verrou de requête, etc. Postman a aussi servi lors de la phase de recette finale : j’ai exécuté l’ensemble des requêtes de la collection comme une simulation d’utilisation complète (login admin, ajout de service, liste services, création RDV côté client – en omettant l’auth pour cette route publique –, puis liste RDV côté admin, confirmation du RDV, etc.). Cette recette complète, effectuée juste avant la soutenance, a confirmé que l’API était globalement stable. J’ai exporté la collection Postman et l’ai fournie en livrable, ce qui permettra à d’autres de reproduire facilement ces tests.
 
@@ -447,9 +539,13 @@ Outils additionnels de qualité : En plus des tests, j’ai utilisé Prettier po
 
 Bilan et suite : En l’état, je suis confiant que les fonctionnalités implémentées fonctionnent selon les attentes, grâce aux tests réalisés. Néanmoins, pour aller plus loin, je prévois d’étendre la suite de tests, et si l’application évolue, mettre en place un système de tests E2E (Cypress) serait un gros plus.
 
-En conclusion, la démarche de test sur le projet, bien qu’imparfaite et à renforcer, a permis de livrer une application opérationnelle et stable. Le fait d’avoir commencé à automatiser avec Jest montre la volonté d’aller vers une intégration continue fiable. Cette expérience m’a par ailleurs sensibilisé à l’importance des tests automatisés, et je compte étoffer ceux de MABOTE même après le stage.
+En conclusion, la démarche de test sur le projet, bien qu’imparfaite et à renforcer, a permis de livrer une application opérationnelle et stable. Le fait d’avoir commencé à automatiser avec Jest montre la volonté d’aller vers une intégration continue fiable. Cette expérience m’a par ailleurs sensibilisé à l’importance des tests automatisés, et je compte étoffer ceux de MABÔTÉ même après le stage.
 
-## Intégration continue et configuration du déploiement
+---
+
+<a id="integration-continue-et-configuration-du-deploiement"></a>
+
+# 🔁 Intégration continue et configuration du déploiement
 
 Bien que le développement du projet ait été réalisé principalement sur un environnement local, j’ai anticipé la mise en place d’une pipeline d’intégration continue et de déploiement continu (CI/CD) pour faciliter les futures évolutions et la mise en production. L’outil tout désigné pour cela, dans notre contexte, est GitHub Actions, étant donné que le code est hébergé sur GitHub.
 
@@ -461,21 +557,29 @@ Proposition de CI avec GitHub Actions : GitHub Actions permet de définir des wo
 1. Job de build & tests : Utiliser une machine virtuelle Node (image officielle) pour checkout le code, installer les dépendances (backend et frontend), puis lancer les tests. Concrètement, exécuter npm install dans le dossier back, npm run build dans le front (pour s’assurer que le front compile sans erreur), puis npm test pour exécuter les tests Jest. Si l’une de ces étapes échoue, le workflow échoue, empêchant une éventuelle mise en production de code défectueux. Ce job vise à garantir que “build, test” passent toujours sur la branche principale – c’est du CI basique. GitHub Actions offre la matrice de compatibilité.
 2. Job de déploiement (CD) : Optionnel et seulement sur des déclencheurs spécifiques (par ex. un tag de version ou une action manuelle). Ce job pourrait automatiquement déployer l’application sur un serveur. L’idée serait, si on adopte Docker, de construire l’image Docker et de l’envoyer sur un registre (Docker Hub) puis de connecter au serveur de prod pour lancer la nouvelle image. Ceci peut être automatisé via GitHub Actions aussi. Si on choisit un PaaS (type Heroku, ou OVH AppEngine, etc.), il existe des actions dédiées. L’objectif est de tendre vers un déploiement continu, c’est-à-dire qu’à chaque nouvelle version validée, la mise en production soit simplifiée et moins sujette à erreur humaine.
 
-## Plan de déploiement futur
+---
 
-Maintenant que le projet a été développé, testé, la prochaine étape sera le déploiement en production de l’application MABOTE pour un usage réel. Cette section décrit le plan de déploiement envisagé, étape par étape, ainsi que l’infrastructure cible et les précautions à prendre pour une mise en service réussie.
+<a id="plan-de-deploiement-futur"></a>
 
-Choix de l’infrastructure : Pour héberger MABOTE, plusieurs options sont possibles. Compte tenu de l’échelle modeste (un salon de beauté, trafic limité), un simple serveur VPS (Virtual Private Server) suffira. Par exemple, un VPS Linux (Ubuntu 22.04) avec 1 vCPU, 2 Go de RAM, et 20 Go de stockage est largement suffisant. Des fournisseurs comme AWS ou OVH peuvent fournir ce genre.
+# ☁️ Plan de déploiement futur
 
-## Veille technologique et pistes d’évolution
+Maintenant que le projet a été développé, testé, la prochaine étape sera le déploiement en production de l’application MABÔTÉ pour un usage réel. Cette section décrit le plan de déploiement envisagé, étape par étape, ainsi que l’infrastructure cible et les précautions à prendre pour une mise en service réussie.
 
-Le domaine du développement web évolue rapidement, et il est important de se tenir informé des nouvelles technologies et pratiques pour faire évoluer le projet dans la bonne direction. Pendant et après le développement de MABOTE, j’ai effectué une veille technologique ciblée autour des aspects concernés par le projet. Cette veille a inspiré plusieurs idées de pistes d’évolution pour une version 2 éventuelle de l’application, afin d’ajouter des fonctionnalités ou améliorer l’architecture.
+Choix de l’infrastructure : Pour héberger MABÔTÉ, plusieurs options sont possibles. Compte tenu de l’échelle modeste (un salon de beauté, trafic limité), un simple serveur VPS (Virtual Private Server) suffira. Par exemple, un VPS Linux (Ubuntu 22.04) avec 1 vCPU, 2 Go de RAM, et 20 Go de stockage est largement suffisant. Des fournisseurs comme AWS ou OVH peuvent fournir ce genre.
+
+---
+
+<a id="veille-technologique-et-pistes-devolution"></a>
+
+# 👀 Veille technologique et pistes d’évolution
+
+Le domaine du développement web évolue rapidement, et il est important de se tenir informé des nouvelles technologies et pratiques pour faire évoluer le projet dans la bonne direction. Pendant et après le développement de MABÔTÉ, j’ai effectué une veille technologique ciblée autour des aspects concernés par le projet. Cette veille a inspiré plusieurs idées de pistes d’évolution pour une version 2 éventuelle de l’application, afin d’ajouter des fonctionnalités ou améliorer l’architecture.
 
 Veille technologique réalisée :
 
-Frameworks front-end alternatifs et évolution de Vue.js : Je me suis renseigné sur l’état de Vue.js . MABOTE a été développé en Vue 3 (composition API) qui est la version la plus récente et pérenne. J’ai constaté que la communauté adopte largement Vue 3, notamment pour ses performances améliorées et son API plus robuste. J’ai également jeté un œil à React et Angular pour comparer : React est très populaire mais nécessite plus de configuration pour un projet de ce type, Angular est plus lourd et surdimensionné pour notre besoin. Je suis conforté dans le choix de Vue pour ce projet, mais je reste attentif aux nouveautés de l’écosystème Vue (par exemple, le nouvel outil de build Vite, que je pourrai envisager d’utiliser pour accélérer le hot-reload en dev).
+Frameworks front-end alternatifs et évolution de Vue.js : Je me suis renseigné sur l’état de Vue.js . MABÔTÉ a été développé en Vue 3 (composition API) qui est la version la plus récente et pérenne. J’ai constaté que la communauté adopte largement Vue 3, notamment pour ses performances améliorées et son API plus robuste. J’ai également jeté un œil à React et Angular pour comparer : React est très populaire mais nécessite plus de configuration pour un projet de ce type, Angular est plus lourd et surdimensionné pour notre besoin. Je suis conforté dans le choix de Vue pour ce projet, mais je reste attentif aux nouveautés de l’écosystème Vue (par exemple, le nouvel outil de build Vite, que je pourrai envisager d’utiliser pour accélérer le hot-reload en dev).
 
-Frameworks back-end plus structurés : Express fonctionne bien, mais lors de la veille, j’ai découvert NestJS, un framework Node qui propose une architecture modulaire inspirée d’Angular (décorateurs, injection de dépendances, etc.). NestJS pourrait être intéressant pour une V2 plus ambitieuse, car il fournit d’office un squelette bien organisé pour les projets plus grands, avec par exemple un module Auth prêt à l’emploi, la validation intégrée, etc. Cela dit, pour la taille actuelle de MABOTE, Express suffit. J’ai aussi regardé AdonisJS (un autre framework Node complet) mais la communauté est plus restreinte.
+Frameworks back-end plus structurés : Express fonctionne bien, mais lors de la veille, j’ai découvert NestJS, un framework Node qui propose une architecture modulaire inspirée d’Angular (décorateurs, injection de dépendances, etc.). NestJS pourrait être intéressant pour une V2 plus ambitieuse, car il fournit d’office un squelette bien organisé pour les projets plus grands, avec par exemple un module Auth prêt à l’emploi, la validation intégrée, etc. Cela dit, pour la taille actuelle de MABÔTÉ, Express suffit. J’ai aussi regardé AdonisJS (un autre framework Node complet) mais la communauté est plus restreinte.
 
 Pistes d’évolution (V2) : À partir de cette veille et des retours potentiels des utilisateurs, voici les fonctionnalités et améliorations envisagées pour la suite :
 
@@ -485,17 +589,21 @@ Pistes d’évolution (V2) : À partir de cette veille et des retours potentiels
 
 Formation continue : La veille fait partie de ma formation continue en tant que développeur. J’ai l’intention de continuer à lire des blogs, à tester de nouvelles technologies dans des petits projets annexes.
 
-En somme, la veille technologique menée m’a permis d’élargir la perspective sur le projet, d’identifier ce qui se fait de mieux et les manques actuels de MABOTE. Les pistes d’évolution listées témoignent d’une vision à plus long terme : on ne s’arrête pas à la livraison de la V1, on pense aux améliorations et aux fonctionnalités additionnelles qui pourraient enrichir le service.
+En somme, la veille technologique menée m’a permis d’élargir la perspective sur le projet, d’identifier ce qui se fait de mieux et les manques actuels de MABÔTÉ. Les pistes d’évolution listées témoignent d’une vision à plus long terme : on ne s’arrête pas à la livraison de la V1, on pense aux améliorations et aux fonctionnalités additionnelles qui pourraient enrichir le service.
 
-## Conclusion et remerciements
+---
 
-Conclusion : Le projet MABOTE s’est avéré une expérience riche et formatrice, me permettant de parcourir l’ensemble du cycle de développement d’une application web, de l’analyse des besoins jusqu’au déploiement. Le résultat est un système fonctionnel de prise de rendez-vous en ligne et de gestion de contenu pour un institut de beauté, aligné sur les objectifs initiaux. Techniquement, j’ai pu mettre en pratique de nombreuses compétences acquises durant la formation CDA : conception d’architecture en couches, développement front-end réactif avec Vue.js, développement back-end sécurisé avec Node.js/Express, modélisation et manipulation d’une base de données relationnelle, implémentation de mécanismes de sécurité (authentification JWT, stockage sûr des mots de passe) etc... Chaque défi rencontré (qu’il s’agisse d’un bug technique, d’un ajustement fonctionnel ou d’une contrainte de temps) a été une occasion d’apprendre et de progresser.
+<a id="conclusion-et-remerciements"></a>
+
+# 🏁 Conclusion et remerciements
+
+Conclusion : Le projet MABÔTÉ s’est avéré une expérience riche et formatrice, me permettant de parcourir l’ensemble du cycle de développement d’une application web, de l’analyse des besoins jusqu’au déploiement. Le résultat est un système fonctionnel de prise de rendez-vous en ligne et de gestion de contenu pour un institut de beauté, aligné sur les objectifs initiaux. Techniquement, j’ai pu mettre en pratique de nombreuses compétences acquises durant la formation CDA : conception d’architecture en couches, développement front-end réactif avec Vue.js, développement back-end sécurisé avec Node.js/Express, modélisation et manipulation d’une base de données relationnelle, implémentation de mécanismes de sécurité (authentification JWT, stockage sûr des mots de passe) etc... Chaque défi rencontré (qu’il s’agisse d’un bug technique, d’un ajustement fonctionnel ou d’une contrainte de temps) a été une occasion d’apprendre et de progresser.
 
 Au-delà des aspects techniques, ce projet m’a aussi enseigné l’importance de la rigueur et de l’organisation : gérer un projet en solo nécessite de la discipline pour planifier les tâches, respecter les échéances, documenter son travail et s’auto-corriger. J’ai développé ma capacité à travailler en autonomie tout en sachant solliciter des avis extérieurs lorsque nécessaire (par exemple, les retours de mon tuteur ou de pairs sur certaines décisions). La dimension de communication et de pédagogie est également non négligeable : rédiger ce rapport détaillé, c’est aussi apprendre à expliquer clairement des choix techniques. C’est un exercice qui m’a consolidé dans ma compréhension du projet.
 
 Le livrable final, entre les mains du jury, n’est pas seulement une application qui tourne : c’est aussi tout un ensemble de connaissances démontrées. Il reste bien sûr des points perfectibles notamment le volet tests automatisés à étendre, et certaines fonctionnalités non implémentées faute de temps (messagerie, paiement en ligne...). Cependant, ces éléments sont identifiés et pourront être adressés en priorité si le projet se poursuit en conditions réelles.
 
-En projection, MABOTE a le potentiel pour évoluer et s’adapter, et je me sens confiant quant à le maintenir et l’enrichir, fort des apprentissages de cette première version. C’est en quelque sorte le point d’aboutissement de ma formation et le point de départ d’une phase plus professionnelle : j’ai maintenant un produit concret à présenter, avec des technologies modernes, qui témoigne de ma capacité à concevoir et développer une application web complète.
+En projection, MABÔTÉ a le potentiel pour évoluer et s’adapter, et je me sens confiant quant à le maintenir et l’enrichir, fort des apprentissages de cette première version. C’est en quelque sorte le point d’aboutissement de ma formation et le point de départ d’une phase plus professionnelle : j’ai maintenant un produit concret à présenter, avec des technologies modernes, qui témoigne de ma capacité à concevoir et développer une application web complète.
 
 Remerciements : Je tiens à exprimer ma gratitude envers toutes les personnes qui ont contribué, de près ou de loin, à la réussite de ce projet et de mon stage.
 
