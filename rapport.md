@@ -386,6 +386,7 @@ La base de données relationnelle de MABÔTÉ a été conçue pour stocker toute
 - **Contenu (ou Article)** : représentant un contenu éditorial publié (une actualité, ou une section de page). Attributs : titre, texte, date_publication. (Ceci pour la partie blog/actualités.)
 
 **Les relations au MCD** : Un Utilisateur peut avoir plusieurs RendezVous (cardinalité 1,N) – cela modélise le fait qu’un client peut réserver plusieurs rendez-vous. Inversement, un RendezVous est pris par un seul Utilisateur (1,1 côté client). De plus, un RendezVous concerne un Service particulier (chaque rendez-vous est pour un type de soin précis) – relation N,1 de RendezVous vers Service (plusieurs rendez-vous peuvent être du même type de service). On peut noter qu’un Service peut être lié à zéro ou plusieurs rendez-vous (s’il n’a jamais été réservé ou s’il l’a été plusieurs fois). La gestion des admin est faite via l’entité Utilisateur aussi, par le champ rôle (pas de table séparée pour le personnel à ce stade, simplification). Enfin, l’entité Contenu est indépendante des précédentes, bien qu’on puisse considérer qu’un administrateur crée un contenu (mais on n’a pas jugé nécessaire de lier Contenu à Utilisateur, cela reste possible en ajoutant un champ auteur si besoin).
+
 ![alt text](image.png)
 
 **Modèle Logique de Données (MLD)** : En passant au modèle logique, on transforme les entités en tables et on précise les clés et les types conceptuellement (sans encore écrire du SQL). Voici le MLD résultant :
@@ -689,41 +690,25 @@ _Le fichier main.js initialise l’application Vue, le routeur et le store globa
 
 # 🔒 Sécurité de l’application
 
-La sécurité est un aspect fondamental du projet MABÔTÉ, notamment en raison de la sensibilité des données traitées (informations personnelles des clients, gestion des rendez-vous). Plusieurs mesures ont été prises pour sécuriser l’application sur les plans fonctionnel et technique.
+<div align="right">
+  <img src="https://cdn-icons-png.flaticon.com/512/5968/5968866.png" alt="Sécurité" width="36" style="margin:0 8px;"/>
+</div>
 
-**1. Authentification et autorisation** :
+La sécurité est un aspect primordial du projet MABÔTÉ, notamment parce que l’application gère des données personnelles (informations de clients, rendez-vous) et que l’interface d’administration doit être strictement réservée à la gérante. Plusieurs mesures de sécurité ont été mises en œuvre, couvrant l’authentification, la protection des mots de passe, la sécurisation des communications client-serveur et la prévention des vulnérabilités web courantes.
 
-- Mise en place d’un système d’authentification par **JSON Web Tokens (JWT)** : Lorsqu’un utilisateur se connecte, un token est généré et envoyé au client. Ce token est à inclure dans chaque requête ultérieure pour prouver l’identité de l’utilisateur.
+- **Authentification par JSON Web Token (JWT)** : Pour l’accès à l’interface d’administration et aux endpoints sensibles de l’API, j’ai implémenté une authentification stateless via des JWT. Lorsqu’un admin se connecte avec son email et mot de passe (endpoint /api/auth/login), le serveur vérifie les identifiants et renvoie un jeton JWT signé contenant l’identifiant de l’utilisateur et son rôle. Un JWT (JSON Web Token) est “un moyen compact et autonome de transmettre de manière sécurisée des informations entre deux parties sous forme d’objet JSON, signé numériquement” . Ce jeton sert de preuve d’authentification et doit être envoyé par le client dans le header Authorization de chaque requête suivante (Bearer <token>). Côté serveur, un middleware d’authentification intercepte les requêtes entrantes : il vérifie la présence et la validité du JWT (en utilisant la librairie jsonwebtoken). Si le token est valide, le middleware extrait les informations (id user, rôle) et les attache à l’objet requête (req.user = { id, role} ) puis laisse passer la requête. Sinon, il renvoie une réponse 401 Unauthorized. Ce mécanisme garantit que seules les personnes authentifiées peuvent accéder aux routes protégées (comme la liste des rendez-vous, la création/modification des services, etc.). Le JWT étant signé (avec un secret stocké côté serveur), il n’est pas falsifiable sans la clé secrète.
 
-- Les mots de passe sont stockés de manière sécurisée grâce à un **hachage avec salage** (utilisation de Bcrypt). Ainsi, même en cas de fuite de la base de données, les mots de passe des utilisateurs restent protégés.
+- **Protection des mots de passe avec Bcrypt** : Aucune donnée sensible n’est stockée en clair dans la base de données. En particulier, le mot de passe de l’administrateur (et potentiellement ceux des clients si comptes clients il y avait) est haché à l’aide de l’algorithme Bcrypt avant stockage. Bcrypt est un algorithme de hachage unidirectionnel spécialement conçu pour les mots de passe : “Il transforme le mot de passe d’un utilisateur en une chaîne de caractères de longueur fixe, garantissant qu’il ne peut pas être inversé pour retrouver le mot de passe original”. De plus, Bcrypt ajoute une valeur aléatoire à chaque mot de passe, rendant chaque hachage unique même pour deux utilisateurs ayant le même mot de passe.
 
-- Des middlewares d’**authentification** et d’**autorisation** sont appliqués sur les routes sensibles : par exemple, seules les administrateurs peuvent accéder aux routes de gestion des utilisateurs.
+- **Helmet et sécurisation des en-têtes HTTP** : Sur le serveur Express, j’ai intégré le middleware Helmet dès le démarrage de l’app. Helmet configure automatiquement un ensemble d’en-têtes HTTP de sécurité pour protéger l’application de vulnérabilités web connues. Par exemple, il active Content­ Security-Policy (pour prévenir certaines attaques XSS en restreignant les sources de scripts), X-Frame- Options: DENY (pour empêcher le clickjacking en interdisant d’inclure le site dans une frame), X-XSS- Protection (pour activer les filtres XSS des navigateurs), etc. Comme le dit la documentation Express, “Helmet vous aide à protéger votre application de certaines des vulnérabilités bien connues du Web en configurant de manière appropriée des en-têtes HTTP”. En utilisant Helmet avec sa configuration par défaut, on bénéficie d’une couche de sécurité supplémentaire sans effort. Cela réduit la surface d’attaque aux vecteurs classiques.
 
-**2. Protection des données sensibles** :
+- **Contrôle d’accès et autorisations** : Au-delà de l’authentification, il est crucial de gérer qui peut faire quoi. Dans MABÔTÉ, le rôle “ADMIN” est le seul autorisé à accéder aux routes de gestion (rendez-vous, services, contenus). J’ai donc implémenté un middleware d’autorisation qui, après authentification JWT, vérifie req.user.role . Si le rôle n’est pas admin sur une route sensible, on renvoie 403 Forbidden. Cela évite qu’un utilisateur mal intentionné (même authentifié en client) appelle des endpoints critiques. Actuellement, seuls les admins ont des comptes, donc ce check est surtout là par précaution pour l’avenir.
 
-- Les données personnelles des clients (nom, email, téléphone) sont considérées comme sensibles et sont donc protégées par des mesures de sécurité renforcées.
+- **Prévention des injections SQL et XSS** : L’utilisation de l’ORM Sequelize offre une bonne protection contre les injections SQL. En effet, quand on passe des paramètres (par ex where: { email: emailEntreParUtilisateur } ), Sequelize se charge d’échapper correctement les valeurs. Cela évite qu’un utilisateur injecte du SQL malicieux via un champ de formulaire. De plus, tous les endroits où on utilise du SQL brut (rarement, sauf peut-être une ou deux requêtes spécifiques) on fait attention à utiliser les bind parameters fournis par Sequelize plutôt que de concaténer des strings. Côté XSS (Cross­ Site Scripting), l’application est en grande partie protégée par le fait que les entrées utilisateur (nom, email, etc.) sont renvoyées au front uniquement à des endroits maîtrisés (et potentiellement encodés). Les templates Vue par défaut échappent les variables insérées dans le HTML, ce qui empêche l’interprétation de scripts injectés. De plus, Content-Security-Policy via Helmet ajoute une couche contre XSS.
 
-- Les communications entre le client et le serveur sont chiffrées via HTTPS pour protéger les données en transit.
+- **Sécurité des communications** : Pendant le développement, l’application tournait en HTTP sur localhost. Pour la production, il est prévu d’activer HTTPS (via certificat SSL sur le serveur web) afin de chiffrer toutes les communications client-serveur. C’est indispensable pour protéger les informations sensibles (le jeton JWT, les mots de passe lors du login, etc.) en transit. L’utilisation d’HTTPS empêchera l’écoute clandestine des données échangées. De plus, via Helmet j’activerai HSTS (Strict-Transport-Security) en production pour forcer le navigateur à n’utiliser que HTTPS.
 
-**3. Sécurisation de l’API** :
-
-- L’API est protégée contre les attaques courantes telles que les injections SQL, les scripts inter-sites (XSS), et les falsifications de requêtes inter-sites (CSRF). Par exemple, Sequelize étant utilisé comme ORM, cela protège automatiquement contre les injections SQL.
-
-- Des en-têtes de sécurité HTTP sont ajoutés aux réponses (via le middleware Helmet) pour protéger contre certaines vulnérabilités web.
-
-**4. Gestion des erreurs** :
-
-- Les messages d’erreur retournés par l’API ne doivent pas divulguer d’informations sensibles sur le fonctionnement interne de l’application. Par exemple, en cas d’échec d’authentification, un message générique est renvoyé sans indiquer si c’est l’email ou le mot de passe qui est incorrect.
-
-**5. Tests de sécurité** :
-
-- Des tests ont été réalisés pour vérifier la résistance de l’application face à des attaques courantes (tests d’intrusion). Des outils automatisés ont été utilisés pour scanner les vulnérabilités de l’application.
-
-**6. Sensibilisation à la sécurité** :
-
-- Le personnel de l’institut (utilisateur admin) a été sensibilisé à l’importance de la sécurité des données et formé à l’utilisation sécurisée de l’application (choix de mots de passe forts, reconnaissance des tentatives de phishing, etc.).
-
-En résumé, la sécurité de l’application MABÔTÉ repose sur une combinaison de bonnes pratiques de développement, de technologies éprouvées et de sensibilisation des utilisateurs. Cela permet de garantir un niveau de sécurité élevé, protégeant à la fois les données des clients et l’intégrité du système.
+En conclusion, l’application intègre dès sa V1 un ensemble solide de mesures de sécurité alignées avec les bonnes pratiques du domaine. L’authentification est assurée de manière stateless et sécurisée via JWT, les mots de passe sont stockés de façon sûre grâce à Bcrypt, et l’application est protégée contre diverses attaques web grâce à Helmet et la validation des entrées. L’importance de la sécurité a été prise en compte à chaque étape du développement – par exemple, lors de la modélisation de la base (ne pas stocker de données en clair inutiles), lors du codage (ne jamais faire confiance aux données entrantes, toujours vérifier côté serveur). Cela réduit significativement les risques d’incidents et donne confiance au client quant à l’utilisation de l’outil en production. Bien sûr, la veille sécuritaire continuera et des audits pourront être faits, mais à ce stade, l’architecture et les choix réalisés posent des bases saines pour une application web sécurisée.
 
 ---
 
@@ -731,244 +716,184 @@ En résumé, la sécurité de l’application MABÔTÉ repose sur une combinaiso
 
 # ✅ Validation des données
 
-La validation des données est une étape cruciale pour garantir l’intégrité et la sécurité des informations traitées par l’application MABÔTÉ. Elle permet de s’assurer que les données reçues sont conformes aux attentes avant d’être traitées ou stockées.
+<div align="right">
+  <img src="https://cdn-icons-png.flaticon.com/512/2721/2721296.png" alt="Validation" width="36" style="margin:0 8px;"/>
+</div>
 
-**1. Validation côté client** :
+La validation des données entrantes est un aspect crucial pour assurer la qualité et la sécurité de l’application. Dans MABÔTÉ, un soin particulier a été apporté à la validation des formulaires côté front-end pour une bonne expérience utilisateur, ainsi qu’à la validation côté back-end pour garantir l’intégrité des données en profondeur et prévenir les entrées malveillantes. En effet, “la validation d’entrée est le processus qui consiste à vérifier les données que les utilisateurs saisissent ou envoient à votre application, et à s’ assurer qu’elles sont correctes, complètes et sûres. Il s’agit d’une étape cruciale pour la sécurité web”.
 
-- Des contrôles sont effectués dans le navigateur de l’utilisateur pour vérifier la conformité des données avant leur envoi au serveur. Par exemple, les formulaires de réservation vérifient que tous les champs obligatoires sont remplis et que l’email a un format valide.
+**Validation côté client (front)** : Les formulaires présents dans l’interface (inscription/connexion admin, prise de rendez-vous, ajout de service, etc.) intègrent des validations immédiates pour guider l’utilisateur. Par exemple :
 
-- Des messages d’erreur clairs sont affichés à l’utilisateur en cas de données invalides, lui permettant de corriger facilement ses saisies.
+- Les champs obligatoires sont marqués comme tels et vérifiés à la soumission (un message s’affiche en rouge si on tente d’envoyer le formulaire sans remplir un champ requis). Le HTML5 permet déjà ça avec l’attribut required et les contraintes de type ( type="email" pour vérifier un email, etc.), ce qui a été utilisé.
+- Des règles spécifiques sont implémentées en JavaScript/Vue : par exemple, pour le formulaire de réservation, la date choisie doit être dans le futur (on compare la date choisie à la date actuelle et on affiche une erreur si elle est passée), le numéro de téléphone doit correspondre à un format attendu (ici, français 10 chiffres par exemple), etc.
+- J’ai utilisé des règles de validation sur le front. Ainsi, l’UX est améliorée car l’utilisateur est notifié en temps réel des problèmes (par exemple, “veuillez entrer une adresse email valide” s’il tape quelque chose qui ne correspond pas au regex email).
 
-**2. Validation côté serveur** :
+Cette validation côté client permet de réduire les erreurs et de prévenir la plupart des saisies incorrectes avant même l’envoi au serveur. Cependant, elle n’est qu’une première barrière, elle ne suffit pas car il est toujours possible de contourner le JavaScript du navigateur. C’est pourquoi toutes les règles sont redondées côté serveur.
 
-- Des vérifications supplémentaires sont effectuées sur le serveur pour toute donnée reçue. Cela inclut la validation des types de données, des formats (ex : date/heure), et des valeurs (ex : statut du rendez-vous).
+**Validation côté serveur (back)** : Aucune donnée n’est traitée ou insérée en base sans être vérifiée. J’ai utilisé la librairie express-validator qui fournit des middlewares de validation dans Express. Par exemple, sur la route ( POST /api/rendezvous), j’ai ajouté un middleware check() pour chaque champ check('emailClient').isEmail().withMessage('Email invalide') , check('dateHeureSouhaitee').isAfter(new Date().toISOString()).withMessage('La date doit être future') etc.
+Express-validator collecte les erreurs de validation et, dans le contrôleur, je vérifie validationResult(req) . S’il y a des erreurs, je renvoie un status 400 avec les détails. De cette manière, même si un client bypass le front et envoie une requête malformée, le back-end la rejettera proprement.
 
-- Des bibliothèques telles qu’**express-validator** sont utilisées pour simplifier et standardiser la validation des données dans les routes de l’API.
+Outre la validation de format, il y a aussi des validations métier :
 
-- En cas d’erreur de validation, une réponse appropriée est renvoyée au client avec un code d’erreur 400 (Bad Request) et un message décrivant le problème.
+- Lors de la création d’un rendez­ vous, on valide que le service demandé existe (on vérifie que id_service correspond à un service en base).
+- Lors de l’enregistrement d’un nouveau service, on s’assure que le nom n’est pas vide, que le prix est un nombre positif, etc.
+- Lors de l’inscription vérifier que l’email n’est pas déjà utilisé (contrainte d’unicité au-delà de la contrainte DB).
 
-**3. Validation des données sensibles** :
+Ces validations métier sont implémentées soit via le code (conditions if dans les contrôleurs) soit via les capacités de Sequelize (par ex, définir un validateur custom sur le modèle). Sequelize propose en effet des validations au niveau modèle que j’ai exploitées dans certains cas simples, par exemple, j’ai pu ajouter dans le modèle RendezVous une validation custom pour s’assurer que la date_heure >= maintenant, renvoyant une erreur sinon.
 
-- Pour les données sensibles comme les mots de passe, des règles strictes sont appliquées : longueur minimale, complexité (inclusion de chiffres, lettres majuscules, caractères spéciaux), etc.
+**Gestion des erreurs de validation** : Lorsque le serveur détecte une entrée invalide, il renvoie un code d’erreur approprié et un message expliquant le problème. Côté front, ces messages sont affichés près du formulaire. Par exemple, si un utilisateur essaye de soumettre le formulaire de réservation sans adresse email, le back renvoie “Email invalide ou manquant” et le front affiche ce message sous le champ email en rouge. Cela assure une expérience cohérente : idéalement, le front empêche déjà cette situation, mais le back sert de filet de sécurité et renvoie un message compréhensible.
 
-- Les mots de passe ne sont jamais stockés en clair dans la base de données. Ils sont systématiquement hachés avec un algorithme sécurisé (Bcrypt) avant d’être enregistrés.
+**Protection contre les attaques via validation** : La validation côté serveur aide aussi à se protéger de certaines attaques. Par exemple, valider la longueur maximale des champs évite qu’un utilisateur envoie un texte extrêmement long pour potentiellement saturer la base ou la mémoire. De même, valider le format d’un champ empêche certaines attaques par injection – par exemple, en refusant les caractères suspects dans un champ qui ne devrait contenir que des chiffres, on limite les tentatives de SQLi ou XSS. Comme mentionné plus haut, la validation d’entrée est un contre mesure efficace contre des failles comme l’injection SQL et XSS .
 
-**4. Tests de validation** :
+**Exemple concret de parcours de validation** : Prenons la fonctionnalité de prise de rendez-vous : côté front, les champs sont vérifiés (par exemple, le champ date utilise un datepicker limitant aux dates possibles, le champ email utilise type=email etc.). Supposons qu’un utilisateur malicieux tente malgré tout d’envoyer une requête directe avec un email malformé et une date vide. Côté serveur, express-validator va attraper ces deux problèmes : “email invalide” et “date requise”. Le serveur renvoie alors une erreur 400 avec ces deux messages. Le front, qui fait l’appel, reçoit cette réponse et peut afficher un message global “Le formulaire contient des erreurs : email invalide; date manquante.”. Ainsi, même sans le front, le back ne laissera pas passer de données incohérentes.
 
-- Des tests sont réalisés pour s’assurer que les règles de validation fonctionnent correctement et qu’aucune donnée invalide ne peut être enregistrée dans le système.
-
-- Des scénarios de tests incluent l’envoi de données valides et invalides, et la vérification des réponses de l’API.
-
-En résumé, la validation des données dans l’application MABÔTÉ est assurée par une combinaison de contrôles côté client et côté serveur, utilisant des outils et bibliothèques adaptés. Cela garantit que seules des données correctes et sécurisées sont traitées par l’application, réduisant ainsi les risques d’erreurs et de vulnérabilités.
+En somme, la stratégie de validation adoptée dans MABÔTÉ est défensive en profondeur : le front améliore l’expérience utilisateur en attrapant les erreurs triviales, et le back s’assure systématiquement de la validité de toute donnée avant traitement ou stockage. Ceci rejoint la bonne pratique générale de ne jamais faire confiance aux entrées utilisateur et de tout vérifier côté serveur. Une telle rigueur évite non seulement des bugs (données manquantes ou mal formées qui provoqueraient des erreurs plus loin) mais aussi renforce la sécurité globale de l’application (beaucoup d’attaques étant rendues caduques par une bonne validation). C’est donc un investissement essentiel qui a été pris en compte dès le développement initial, plutôt que de le voir comme une amélioration ultérieure. À l’usage, cela se traduira par une application plus robuste face aux mauvaises manipulations ou tentatives inappropriées, et des retours d’information clairs pour les utilisateurs qui seraient amenés à corriger leur saisie.
 
 ---
 
 <a id="tests-et-assurance-qualite"></a>
 
-# 🔍 Tests et assurance qualité
+# 🧪 Tests et assurance qualité
 
-Des tests rigoureux ont été effectués tout au long du développement de l’application MABÔTÉ pour s’assurer de son bon fonctionnement et de sa conformité aux exigences spécifiées. Une démarche d’assurance qualité a été suivie pour identifier et corriger les défauts avant la mise en production.
+<div align="right">
+  <img src="https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/postman-icon.png" alt="Postman" width="32" style="margin:0 8px;"/>
+  <img src="https://ih1.redbubble.net/image.404020079.1876/st,small,507x507-pad,600x600,f8f8f8.u7.jpg" alt="Jest" width="32" style="margin:0 8px;"/>
+</div>
 
-**1. Types de tests réalisés** :
+Les tests occupent une place importante dans le cycle de développement du projet MABÔTÉ, afin de garantir que chaque fonctionnalité implémentée fonctionne comme prévu et que l’ensemble de l’application est stable. Deux approches de test ont été utilisées : des tests manuels (principalement via Postman pour l’API et tests exploratoires de l’interface) et des tests automatisés (avec Jest côté back­ end).
 
-- **Tests fonctionnels** : Vérifient que chaque fonctionnalité de l’application fonctionne comme prévu. Par exemple, s’assurer qu’un utilisateur peut créer un rendez-vous et que celui-ci apparaît dans la liste des rendez-vous.
+**Tests manuels de l’API avec Postman** : Durant le développement, j’ai régulièrement utilisé l’outil Postman pour vérifier le comportement des endpoints de l’API. Postman est un logiciel très pratique pour construire et envoyer des requêtes HTTP et observer les réponses, sans passer par l’interface utilisateur frontale. J’ai créé une collection de requêtes regroupant tous les appels importants : authentification, création de rendez-vous, récupération de rendez-vous, etc. Pour chaque requête, j’ai préparé plusieurs scénarios : des cas valides (ex: créer un rendez-vous avec des données correctes) et des cas erreurs (ex: tenter de créer un rendez-vous sur un créneau déjà occupé. À l’aide de Postman, j’ai pu itérer rapidement en appelant l’API à chaque modification du code serveur et en vérifiant la conformité des réponses (codes HTTP, format JSON, contenu). Cela a permis de détecter et corriger de nombreux problèmes en amont : par exemple, j’ai ajusté les messages d’erreur pour qu’ils soient plus explicites, j’ai corrigé une erreur de logique où un rendez-vous pouvait être créé en double faute d’un bon verrou de requête, etc. Postman a aussi servi lors de la phase de recette finale : j’ai exécuté l’ensemble des requêtes de la collection comme une simulation d’utilisation complète (login admin, ajout de service, liste services, création RDV côté client – en omettant l’auth pour cette route publique –, puis liste RDV côté admin, confirmation du RDV, etc.). Cette recette complète, effectuée juste avant la soutenance, a confirmé que l’API était globalement stable. J’ai exporté la collection Postman et l’ai fournie en livrable, ce qui permettra à d’autres de reproduire facilement ces tests.
 
-- **Tests d’intégration** : Vérifient que les différents modules de l’application (front-end, back-end, base de données) fonctionnent correctement ensemble. Par exemple, s’assurer qu’une donnée saisie dans le formulaire de réservation est bien enregistrée dans la base de données.
+**Tests automatisés avec Jest**: Parallèlement aux tests manuels, j’ai entrepris la mise en place de tests automatisés pour le back-end à l’aide de Jest, un framework de test pour JavaScript. Jest est connu pour sa simplicité et son intégration aisée dans les projets Node Il offre un ensemble complet d’assertions permettant d’écrire des tests pour de nombreux types de projets L’idée était d’écrire des tests unitaires pour les fonctions critiques (par exemple la fonction de validation de créneau horaire, ou la fonction d’authentification).
 
-- **Tests de régression** : S’assurent qu’une nouvelle fonctionnalité n’a pas introduit de bogues dans des fonctionnalités existantes. Par exemple, après avoir ajouté une nouvelle méthode de paiement, vérifier que la création de rendez-vous par les utilisateurs fonctionne toujours.
+**Lacunes et améliorations en matière de tests** : Je reconnais que la couverture de tests est incomplète. En particulier :
 
-- **Tests de performance** : Évaluent la rapidité et la réactivité de l’application sous différentes charges. Par exemple, simuler plusieurs utilisateurs réservant des rendez-vous en même temps pour voir comment l’application réagit.
+- Pas de tests end-to-end (E2E) de l’interface complète : idéalement, j’aurait pu utiliser un outil comme Cypress ou Puppeteer pour simuler un vrai parcours utilisateur sur le front (ouvrir la page, remplir le formulaire, vérifier que le RDV apparaît côté admin, etc.). Faute de temps, ces tests E2E n’ont pas été mis en place. La validation s’est faite manuellement en naviguant sur le site dans différents navigateurs.
+- Couverture partielle du back-end : seules les routes principales ont des tests. Les scénarios d’erreurs n’ont pas tous été automatisés
+- Tests de charge/performance : aucun test de charge automatisé n’a été. Vu la portée du projet ce n’était pas prioritaire, mais c’est un point à considérer pour l’avenir, ne serait-ce que pour connaître la limite de connexions simultanées gérées par le serveur Node sur le type d’hébergement prévu.
 
-- **Tests de sécurité** : Vérifient que l’application est protégée contre les vulnérabilités courantes (injections SQL, XSS, CSRF, etc.). Des outils automatisés ont été utilisés pour scanner l’application à la recherche de failles de sécurité.
+Malgré ces lacunes, le projet a atteint un niveau de qualité satisfaisant grâce aux tests effectués. Les tests manuels intensifs ont permis de valider toutes les user stories du cahier des charges. À chaque ajout de fonctionnalité, je prenais le temps de la tester sous différents angles : par exemple, pour l’ajout d’un service, ou encore j’ai testé d’ajouter un service sans prix pour voir le comportement (le front empêchant déjà ça, mais en envoyant via Postman j’ai vérifié que le back bloque bien l’ajout en l’absence de prix). Cette démarche manuelle a pu combler en partie l’absence de tests automatisés exhaustifs.
 
-**2. Outils et méthodologie de test** :
+**Outils additionnels de qualité** : En plus des tests, j’ai utilisé Prettier pour maintenir un code propre. J’ai également fait relire une partie du code à un collègue développeur (qu’on peut assimiler à une mini revue de code informelle) pour recueillir ses remarques, notamment sur la clarté du nommage et le respect des bonnes pratiques Express. Ce processus a permis d’ajouter une petite couche de garantie qualité supplémentaire.
 
-- Des outils comme **Postman** ont été utilisés pour tester les API et vérifier les réponses retournées pour différentes requêtes.
+**Bilan et suite** : En l’état, je suis confiant que les fonctionnalités implémentées fonctionnent selon les attentes, grâce aux tests réalisés. Néanmoins, pour aller plus loin, je prévois d’étendre la suite de tests, et si l’application évolue, mettre en place un système de tests E2E (Cypress) serait un gros plus.
 
-- Des tests automatisés ont été écrits avec des frameworks comme **Jest** pour les tests unitaires et **Supertest** pour les tests d’intégration des API.
-
-- Des tests manuels ont également été effectués, en particulier pour les tests fonctionnels et de régression, afin de simuler le comportement réel des utilisateurs.
-
-**3. Suivi des défauts** :
-
-- Un système de suivi des défauts a été mis en place pour enregistrer, suivre et gérer les bogues et problèmes identifiés durant les tests.
-
-- Chaque défaut est classé par priorité et gravité, et des mesures sont prises pour le corriger dans les plus brefs délais.
-
-**4. Validation finale** :
-
-- Avant la mise en production, une validation finale a été effectuée pour s’assurer que tous les défauts critiques et majeurs étaient corrigés et que l’application répondait aux attentes.
-
-- Cette validation inclut une revue complète de l’application, des tests de bout en bout, et une vérification de la conformité avec le cahier des charges.
-
-En résumé, une démarche rigoureuse de tests et d’assurance qualité a été suivie pour le projet MABÔTÉ, utilisant une combinaison de tests manuels et automatisés, d’outils adaptés, et de bonnes pratiques de développement. Cela a permis de livrer une application fiable, sécurisée, et de qualité.
+En conclusion, la démarche de test sur le projet, bien qu’imparfaite et à renforcer, a permis de livrer une application opérationnelle et stable. Le fait d’avoir commencé à automatiser avec Jest montre la volonté d’aller vers une intégration continue fiable. Cette expérience m’a par ailleurs sensibilisé à l’importance des tests automatisés, et je compte étoffer ceux de MABÔTÉ même après le stage.
 
 ---
 
 <a id="integration-continue-et-configuration-du-deploiement"></a>
 
-# CI/CD : Intégration continue et configuration du déploiement
+# 🔁 Intégration continue et configuration du déploiement
 
-La mise en place d’une démarche d’intégration continue et de déploiement continu (CI/CD) est essentielle pour assurer la qualité et la fiabilité des livraisons de l’application MABÔTÉ. Cela permet d’automatiser les tests et le déploiement, garantissant ainsi que chaque modification du code est correctement testée et déployée en production.
+<div align="right">
+  <img src="https://cdn-icons-png.flaticon.com/512/5968/5968866.png" alt="GitHub" width="32" style="margin:0 8px;"/>
+  <img src="https://cdn-icons-png.flaticon.com/512/919/919831.png" alt="Git" width="32" style="margin:0 8px;"/>
+</div>
 
-**1. Outils d’intégration continue** :
+Bien que le développement du projet ait été réalisé principalement sur un environnement local, j’ai anticipé la mise en place d’une pipeline d’intégration continue et de déploiement continu (CI/CD) pour faciliter les futures évolutions et la mise en production. L’outil tout désigné pour cela, dans notre contexte, est GitHub Actions, étant donné que le code est hébergé sur GitHub.
 
-- Un serveur d’intégration continue (par exemple **Jenkins**, **Travis CI**, ou **GitHub Actions**) est utilisé pour automatiser le processus de test et de déploiement.
+**Proposition de CI avec GitHub Actions** : GitHub Actions permet de définir des workflows automatisés déclenchés par des événements (push, pull request, etc.) sur le dépôt. J’ai rédigé (mais pas encore activé) un fichier de workflow YAML qui couvrirait les étapes suivantes :
 
-- À chaque fois qu’un développeur pousse du code sur le dépôt (push), le serveur CI déclenche automatiquement une série de tests (tests unitaires, tests d’intégration, etc.).
+- **Trigger** : déclenchement du workflow sur chaque push sur la branche main (et éventuellement sur les pull requests).
+- **Jobs** :
 
-**2. Pipeline de déploiement** :
-
-- Un pipeline de déploiement est défini, spécifiant les étapes à suivre pour déployer l’application en production. Cela inclut la construction de l’application, l’exécution des tests, et le déploiement sur le serveur de production.
-
-- Des outils comme **Docker** peuvent être utilisés pour containeriser l’application, assurant ainsi que celle-ci fonctionne de manière cohérente dans tous les environnements (développement, test, production).
-
-**3. Environnements de déploiement** :
-
-- Des environnements distincts sont configurés pour le développement, les tests, et la production. Cela permet de tester les nouvelles fonctionnalités dans un environnement similaire à la production avant de les déployer réellement.
-
-- Par exemple, un environnement de pré-production peut être utilisé pour valider l’ensemble du processus de déploiement avant de passer en production.
-
-**4. Gestion des configurations** :
-
-- Les fichiers de configuration (par exemple, pour la base de données, les clés API, etc.) sont gérés de manière sécurisée, souvent en utilisant des variables d’environnement, pour éviter de les exposer dans le code source.
-
-- Des outils comme **dotenv** peuvent être utilisés pour charger les variables d’environnement à partir d’un fichier .env dans l’application.
-
-**5. Surveillance et alertes** :
-
-- Une fois déployée, l’application est surveillée pour détecter d’éventuels problèmes de performance ou de disponibilité. Des outils comme **New Relic**, **Datadog**, ou des solutions open-source comme **Prometheus** et **Grafana** peuvent être utilisés.
-
-- Des alertes sont configurées pour prévenir l’équipe de développement en cas de problème critique (par exemple, une augmentation soudaine du temps de réponse, des erreurs 500, etc.).
-
-**6. Sauvegardes et restauration** :
-
-- Des procédures de sauvegarde régulières sont mises en place pour s’assurer que les données de l’application (base de données, fichiers téléchargés, etc.) sont sauvegardées et peuvent être restaurées en cas de besoin.
-
-- Par exemple, des sauvegardes quotidiennes de la base de données peuvent être automatisées, avec stockage des sauvegardes sur un service cloud sécurisé.
-
-En résumé, la mise en place d’une démarche CI/CD pour l’application MABÔTÉ repose sur l’utilisation d’outils d’intégration continue, la définition de pipelines de déploiement, la gestion sécurisée des configurations, et la surveillance de l’application en production. Cela garantit des livraisons fréquentes, fiables, et de qualité.
+  1. **Job de build & tests** : Utiliser une machine virtuelle Node (image officielle) pour checkout le code, installer les dépendances (backend et frontend), puis lancer les tests. Concrètement, exécuter npm install dans le dossier back, npm run build dans le front (pour s’assurer que le front compile sans erreur), puis npm test pour exécuter les tests Jest. Si l’une de ces étapes échoue, le workflow échoue, empêchant une éventuelle mise en production de code défectueux. Ce job vise à garantir que “build, test” passent toujours sur la branche principale – c’est du CI basique. GitHub Actions offre la matrice de compatibilité.
+  2. **Job de déploiement (CD)** : Optionnel et seulement sur des déclencheurs spécifiques (par ex. un tag de version ou une action manuelle). Ce job pourrait automatiquement déployer l’application sur un serveur. L’idée serait, si on adopte Docker, de construire l’image Docker et de l’envoyer sur un registre (Docker Hub) puis de connecter au serveur de prod pour lancer la nouvelle image. Ceci peut être automatisé via GitHub Actions aussi. Si on choisit un PaaS (type Heroku, ou OVH AppEngine, etc.), il existe des actions dédiées. L’objectif est de tendre vers un déploiement continu, c’est-à-dire qu’à chaque nouvelle version validée, la mise en production soit simplifiée et moins sujette à erreur humaine.
 
 ---
 
 <a id="plan-de-deploiement-futur"></a>
 
-# 🚀 Plan de déploiement futur
+# ☁️ Plan de déploiement futur
 
-Le déploiement de l’application MABÔTÉ en production nécessite une planification soigneuse pour s’assurer que toutes les étapes sont correctement exécutées et que l’application est disponible et fonctionnelle pour les utilisateurs finaux. Voici les principales étapes du plan de déploiement :
+Maintenant que le projet a été développé, testé, la prochaine étape sera le déploiement en production de l’application MABÔTÉ pour un usage réel. Cette section décrit le plan de déploiement envisagé, étape par étape, ainsi que l’infrastructure cible et les précautions à prendre pour une mise en service réussie.
 
-**1. Préparation de l’environnement de production** :
-
-- S’assurer que l’environnement de production est prêt et conforme aux exigences de l’application (serveurs, base de données, services tiers, etc.).
-
-- Par exemple, vérifier que le serveur dispose de la bonne version de Node.js, que la base de données est accessible, et que les variables d’environnement sont correctement configurées.
-
-**2. Déploiement de la base de données** :
-
-- Si des modifications de la structure de la base de données sont nécessaires (ajout de tables, colonnes, etc.), celles-ci doivent être effectuées en premier.
-
-- Des scripts de migration de base de données peuvent être utilisés pour appliquer les changements de manière contrôlée et répétable.
-
-**3. Déploiement du code de l’application** :
-
-- Le code de l’application (front-end et back-end) est déployé sur le serveur de production. Cela peut être fait en copiant les fichiers, en utilisant des outils de déploiement continu, ou en déployant des conteneurs Docker.
-
-- Par exemple, si Docker est utilisé, une image Docker de l’application est construite et poussée vers un registre d’images, puis déployée sur le serveur de production.
-
-**4. Configuration des services et des tâches planifiées** :
-
-- Tous les services nécessaires (serveur web, serveur d’applications, base de données, etc.) doivent être démarrés et configurés pour se lancer automatiquement au démarrage du serveur.
-
-- Si des tâches planifiées (cron jobs) sont nécessaires, celles-ci doivent être configurées pour s’exécuter à intervalles réguliers.
-
-**5. Tests de validation en production** :
-
-- Une fois déployée, l’application doit être testée dans l’environnement de production pour s’assurer que tout fonctionne correctement.
-
-- Cela inclut des tests fonctionnels, des tests de performance, et des tests de sécurité.
-
-**6. Mise en service** :
-
-- Une fois que l’application a été validée en production, elle peut être mise en service et rendue accessible aux utilisateurs finaux.
-
-- Cela peut inclure la configuration des DNS, la mise à jour des enregistrements DNS, et la configuration des certificats SSL pour HTTPS.
-
-**7. Surveillance post-déploiement** :
-
-- Après le déploiement, l’application doit être surveillée de près pour détecter d’éventuels problèmes de performance, de disponibilité, ou de sécurité.
-
-- Des alertes doivent être configurées pour prévenir l’équipe de développement en cas de problème critique.
-
-**8. Sauvegardes** :
-
-- Des sauvegardes régulières de l’application et de la base de données doivent être mises en place pour garantir la récupération des données en cas de besoin.
-
-- Par exemple, des sauvegardes quotidiennes de la base de données peuvent être automatisées, avec stockage des sauvegardes sur un service cloud sécurisé.
-
-**9. Documentation** :
-
-- Toute la documentation nécessaire (manuel utilisateur, documentation technique, etc.) doit être finalisée et mise à disposition des utilisateurs et des administrateurs.
-
-- Cela inclut la mise à jour du README du projet, la documentation des API, et la rédaction de guides d’utilisation.
-
-En résumé, le plan de déploiement de l’application MABÔTÉ en production suit une approche structurée et méthodique, garantissant que toutes les étapes critiques sont couvertes pour un déploiement réussi et une mise en service sans heurts.
+**Choix de l’infrastructure** : Pour héberger MABÔTÉ, plusieurs options sont possibles. Compte tenu de l’échelle modeste (un salon de beauté, trafic limité), un simple serveur VPS (Virtual Private Server) suffira. Par exemple, un VPS Linux (Ubuntu 22.04) avec 1 vCPU, 2 Go de RAM, et 20 Go de stockage est largement suffisant. Des fournisseurs comme AWS ou OVH peuvent fournir ce genre.
 
 ---
 
-<a id="veille-technologique-et-pistes-d-evolution"></a>
+<a id="veille-technologique-et-pistes-devolution"></a>
 
-# 🔭 Veille technologique et pistes d’évolution
+# 👀 Veille technologique et pistes d’évolution
 
 <div align="right">
-  <img src="https://cdn-icons-png.flaticon.com/512/2991/2991108.png" alt="Veille technologique" width="36" style="margin:0 8px;"/>
+  <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Veille" width="32" style="margin:0 8px;"/>
 </div>
 
-La veille technologique est essentielle dans le domaine du développement logiciel pour s’assurer que les compétences et les connaissances restent à jour face à l’évolution rapide des technologies. Dans le cadre du projet MABÔTÉ, plusieurs pistes d’évolution ont été identifiées tant sur le plan technologique que fonctionnel.
+Le domaine du développement web évolue rapidement, et il est important de se tenir informé des nouvelles technologies et pratiques pour faire évoluer le projet dans la bonne direction. Pendant et après le développement de MABÔTÉ, j’ai effectué une veille technologique ciblée autour des aspects concernés par le projet. Cette veille a inspiré plusieurs idées de pistes d’évolution pour une version 2 éventuelle de l’application, afin d’ajouter des fonctionnalités ou améliorer l’architecture.
 
-**1. Évolutions technologiques possibles** :
+**Veille technologique réalisée** :
 
-- **Migration vers des architectures serverless** : Envisager l’utilisation de fonctions cloud (AWS Lambda, Azure Functions) pour certaines parties de l’application, permettant une scalabilité automatique et une réduction des coûts liés aux serveurs.
+- **Frameworks front-end alternatifs et évolution de Vue.js** : Je me suis renseigné sur l’état de Vue.js . MABÔTÉ a été développé en Vue 3 (composition API) qui est la version la plus récente et pérenne. J’ai constaté que la communauté adopte largement Vue 3, notamment pour ses performances améliorées et son API plus robuste. J’ai également jeté un œil à React et Angular pour comparer : React est très populaire mais nécessite plus de configuration pour un projet de ce type, Angular est plus lourd et surdimensionné pour notre besoin. Je suis conforté dans le choix de Vue pour ce projet, mais je reste attentif aux nouveautés de l’écosystème Vue (par exemple, le nouvel outil de build Vite, que je pourrai envisager d’utiliser pour accélérer le hot-reload en dev).
 
-- **Utilisation de conteneurs et orchestration** : Généraliser l’usage de Docker pour le développement et le déploiement, et potentiellement utiliser Kubernetes pour l’orchestration des conteneurs si l’application venait à se complexifier.
+- **Frameworks back-end plus structurés** : Express fonctionne bien, mais lors de la veille, j’ai découvert NestJS, un framework Node qui propose une architecture modulaire inspirée d’Angular (décorateurs, injection de dépendances, etc.). NestJS pourrait être intéressant pour une V2 plus ambitieuse, car il fournit d’office un squelette bien organisé pour les projets plus grands, avec par exemple un module Auth prêt à l’emploi, la validation intégrée, etc. Cela dit, pour la taille actuelle de MABÔTÉ, Express suffit. J’ai aussi regardé AdonisJS (un autre framework Node complet) mais la communauté est plus restreinte.
 
-- **Amélioration de la CI/CD** : Mettre en place une intégration continue et un déploiement continu plus avancés, avec des tests automatisés à chaque commit et un déploiement automatique en pré-production.
+**Pistes d’évolution (V2)** : À partir de cette veille et des retours potentiels des utilisateurs, voici les fonctionnalités et améliorations envisagées pour la suite :
 
-- **Surveillance et logging avancés** : Intégrer des solutions de monitoring (comme Prometheus, Grafana) et de logging centralisé (comme ELK Stack) pour une meilleure observabilité de l’application en production.
+- **Module de notifications et rappels** : Implémenter l’envoi automatique d’email (voire SMS) de rappel au client avant son rendez-vous (par exemple 24h avant). Cela améliorerait le service en réduisant le risque d’oubli de RDV. Techniquement, cela suppose de planifier des tâches (via un cron dans Node ou un service externe). On peut aussi envisager des notifications push via la PWA si on l’implémente, pour les clients ayant installé l’app.
 
-**2. Évolutions fonctionnelles possibles** :
+- **Paiement en ligne à la réservation** : Permettre aux clients de payer tout ou partie du service lors de la réservation (ex : arrhes). Cela nécessite d’intégrer un système de paiement (Stripe, PayPal...). C’est une évolution significative mais qui pourrait apporter de la valeur (certains instituts demandent un acompte pour éviter les lapins).
 
-- **Ajout de fonctionnalités de messagerie** : Intégrer un système de messagerie interne pour faciliter la communication entre les clients et l’administrateur.
+**Formation continue** : La veille fait partie de ma formation continue en tant que développeur. J’ai l’intention de continuer à lire des blogs, à tester de nouvelles technologies dans des petits projets annexes.
 
-- **Mise en place d’un système de notifications** : Alerter les clients par email ou SMS des rappels de rendez-vous, des promotions, ou des actualités.
-
-- **Extension à d’autres types de services** : Permettre la réservation de services additionnels (vente de produits, abonnements, etc.) directement depuis l’application.
-
-- **Multilinguisme et accessibilité** : Rendre l’application disponible en plusieurs langues et veiller à son accessibilité pour les personnes en situation de handicap.
-
-**3. Innovations à explorer** :
-
-- **Intelligence artificielle** : Utiliser des algorithmes de machine learning pour proposer des recommandations personnalisées de soins ou de produits aux clients.
-
-- **Blockchain** : Explorer l’usage de la blockchain pour sécuriser les transactions et garantir l’authenticité des avis clients.
-
-- **PWA (Progressive Web App)** : Transformer l’application en une PWA pour offrir une expérience utilisateur similaire à celle d’une application native (hors ligne, notifications, etc.).
-
-En conclusion, le projet MABÔTÉ ouvre la voie à de nombreuses possibilités d’évolutions et d’améliorations, tant sur le plan technologique que fonctionnel. La veille technologique continue et l’écoute des besoins des utilisateurs seront essentielles pour orienter ces évolutions.
+En somme, la veille technologique menée m’a permis d’élargir la perspective sur le projet, d’identifier ce qui se fait de mieux et les manques actuels de MABÔTÉ. Les pistes d’évolution listées témoignent d’une vision à plus long terme : on ne s’arrête pas à la livraison de la V1, on pense aux améliorations et aux fonctionnalités additionnelles qui pourraient enrichir le service.
 
 ---
 
 <a id="conclusion-et-remerciements"></a>
 
-# 🙏 Conclusion et remerciements
+# 🏁 Conclusion et remerciements
 
-Ce rapport a pour objectif de présenter de manière structurée et détaillée l’ensemble du projet MABÔTÉ, réalisé dans le cadre de mon stage de fin de formation en tant que Concepteur Développeur d’Applications. Ce projet a été une occasion précieuse de mettre en pratique l’ensemble des compétences acquises durant ma formation, dans un contexte professionnel réel.
+**Conclusion** : Le projet MABÔTÉ s’est avéré une expérience riche et formatrice, me permettant de parcourir l’ensemble du cycle de développement d’une application web, de l’analyse des besoins jusqu’au déploiement. Le résultat est un système fonctionnel de prise de rendez-vous en ligne et de gestion de contenu pour un institut de beauté, aligné sur les objectifs initiaux. Techniquement, j’ai pu mettre en pratique de nombreuses compétences acquises durant la formation CDA : conception d’architecture en couches, développement front-end réactif avec Vue.js, développement back-end sécurisé avec Node.js/Express, modélisation et manipulation d’une base de données relationnelle, implémentation de mécanismes de sécurité (authentification JWT, stockage sûr des mots de passe) etc... Chaque défi rencontré (qu’il s’agisse d’un bug technique, d’un ajustement fonctionnel ou d’une contrainte de temps) a été une occasion d’apprendre et de progresser.
 
-Au travers de ce rapport, j’ai exposé les différentes étapes du projet, depuis l’analyse du besoin jusqu’au déploiement, en passant par la conception, le développement et les tests. J’ai également mis en avant les choix techniques effectués, ainsi que les compétences mobilisées tout au long de cette expérience.
+Au-delà des aspects techniques, ce projet m’a aussi enseigné l’importance de la rigueur et de l’organisation : gérer un projet en solo nécessite de la discipline pour planifier les tâches, respecter les échéances, documenter son travail et s’auto-corriger. J’ai développé ma capacité à travailler en autonomie tout en sachant solliciter des avis extérieurs lorsque nécessaire (par exemple, les retours de mon tuteur ou de pairs sur certaines décisions). La dimension de communication et de pédagogie est également non négligeable : rédiger ce rapport détaillé, c’est aussi apprendre à expliquer clairement des choix techniques. C’est un exercice qui m’a consolidé dans ma compréhension du projet.
 
-Je tiens à exprimer ma profonde gratitude envers l’ensemble des personnes qui ont contribué à la réalisation de ce projet et à la rédaction de ce rapport. Tout d’abord, un grand merci à ma tutrice de stage, Marine Guilbert, pour son accompagnement, ses conseils avisés, et sa disponibilité tout au long de mon stage. Ses retours constructifs ont été précieux pour mener à bien ce projet.
+Le livrable final, entre les mains du jury, n’est pas seulement une application qui tourne : c’est aussi tout un ensemble de connaissances démontrées. Il reste bien sûr des points perfectibles notamment le volet tests automatisés à étendre, et certaines fonctionnalités non implémentées faute de temps (messagerie, paiement en ligne...). Cependant, ces éléments sont identifiés et pourront être adressés en priorité si le projet se poursuit en conditions réelles.
 
-Je remercie également l’équipe pédagogique de la formation CDA, pour la qualité de l’enseignement dispensé et le suivi tout au long de mon parcours. Les compétences acquises m’ont été d’une grande utilité dans la réalisation de ce projet.
+En projection, MABÔTÉ a le potentiel pour évoluer et s’adapter, et je me sens confiant quant à le maintenir et l’enrichir, fort des apprentissages de cette première version. C’est en quelque sorte le point d’aboutissement de ma formation et le point de départ d’une phase plus professionnelle : j’ai maintenant un produit concret à présenter, avec des technologies modernes, qui témoigne de ma capacité à concevoir et développer une application web complète.
 
-Enfin, je souhaite remercier ma famille et mes amis pour leur soutien et leur compréhension durant cette période intense qu’a été mon stage.
+**Remerciements** :
 
-En espérant que ce rapport saura rendre compte de la richesse et de la diversité des travaux réalisés dans le cadre du projet MABÔTÉ.
+Je tiens à exprimer ma gratitude envers toutes les personnes qui ont contribué, de près ou de loin, à la réussite de ce projet et de mon stage.
+
+- Tout d’abord, un grand merci à mon tuteur de stage, pour son encadrement, et sa disponibilité.
+- Je remercie également l’équipe pédagogique de la formation Concepteur Développeur d’Applications, qui nous a transmis les bases solides en développement et qui ont suivi l’avancement de nos projets avec intérêt.
+- Merci à mes collègues stagiaires avec qui j’ai pu échanger et partager des astuces. Ces moments de collaboration et de relecture mutuelle ont clairement amélioré la qualité du projet.
+- Enfin, sur un plan plus personnel, je remercie ma famille et mes proches qui m’ont soutenu durant cette période intensive, montrant compréhension lors des longues soirées passées à coder et encouragements dans les moments de doute.
+
+Ce projet a été intense, mais chaque difficulté surmontée et chaque fonctionnalité livrée m’ont conforté dans mon choix de carrière. J’espère que ce rapport aura su refléter tout le travail accompli et la passion que j’ai investie dans ce projet. Je suis ouvert à toutes les questions et discussions qui pourront en découler.
+
+Merci à vous, membres du jury, d’avoir pris le temps de lire ce rapport et d’évaluer mon travail.
+
+---
+
+![alt text](annexes/class.png)
+_Diagramme de classes : structure des objets principaux du projet._
+
+![alt text](annexes/entiteAssociation.png)
+_Diagramme entité-association (ERD) : relations entre les entités de la base de données._
+
+![alt text](annexes/maquete.png)
+_Maquette de l’interface utilisateur, présentant l’aspect visuel de l’application._
+
+![alt text](annexes/MCD.png)
+_Modèle Conceptuel de Données (MCD) : entités et relations principales._
+
+![alt text](annexes/mcdautreversion.png)
+_Variante du MCD, proposant une autre vue des relations de données._
+
+![alt text](annexes/MLD.png)
+_Modèle Logique de Données (MLD) : tables relationnelles dérivées du MCD._
+
+![alt text](annexes/sequenceRDV.png)
+_Diagramme de séquence : déroulement d’une prise de rendez-vous._
+
+![alt text](annexes/usecase.png)
+_Diagramme de cas d’utilisation : interactions possibles avec le système._
+
+![alt text](annexes/wireframe.png)
+_Wireframe de l’application, disposition des éléments de l’interface._
+
+![alt text](annexes/Zoning.png)
+_Schéma de zoning : zones fonctionnelles de la page principale._
