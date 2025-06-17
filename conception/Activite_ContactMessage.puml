@@ -1,0 +1,13 @@
+@startuml
+start
+:Accéder au formulaire de contact;
+:Remplir les champs requis;
+:Soumettre le formulaire;
+if (Champs valides ?) then (oui)
+  :Enregistrer le message;
+  :Afficher confirmation;
+else (non)
+  :Afficher erreurs de validation;
+endif
+stop
+@enduml

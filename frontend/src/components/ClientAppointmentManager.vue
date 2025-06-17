@@ -89,7 +89,7 @@
         <ul class="list-group">
           <li
             v-for="appointment in myAppointments.filter(
-              (a) => a.status !== 'cancelled'
+              (a) => a.status !== 'annulée'
             )"
             :key="appointment.id"
             class="list-group-item d-flex justify-content-between align-items-center"
@@ -167,7 +167,7 @@ const availableSlots = computed(() => {
       (app) =>
         app.date === selectedDate.value &&
         app.time === slot &&
-        app.status !== "cancelled"
+        app.status !== "annulée"
     );
     if (!isTaken) {
       slots.push(slot);

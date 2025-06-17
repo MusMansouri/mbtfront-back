@@ -319,7 +319,7 @@ async function submitReservation() {
       ritualId: selectedRitualId.value, // correction ici
       date: selectedDate.value,
       heure: selectedSlot.value + ":00",
-      status: "pending",
+      status: "attente",
       telephone: userInfo.value.phone,
     };
     if (isAuthenticated.value && !isAdmin.value && user.value?.id) {

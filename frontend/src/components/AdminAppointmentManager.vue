@@ -114,12 +114,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr
-            v-for="appointment in appointments.filter(
-              (a) => a.status !== 'cancelled'
-            )"
-            :key="appointment.id"
-          >
+          <tr v-for="appointment in appointments" :key="appointment.id">
             <td>{{ appointment.date }}</td>
             <td>{{ appointment.heure || appointment.time }}</td>
             <td>
@@ -142,9 +137,9 @@
             <td>
               <span
                 :class="{
-                  'badge bg-success': appointment.status === 'confirmed',
-                  'badge bg-warning': appointment.status === 'pending',
-                  'badge bg-danger': appointment.status === 'cancelled',
+                  'badge bg-success': appointment.status === 'confirmé',
+                  'badge bg-warning': appointment.status === 'attente',
+                  'badge bg-danger': appointment.status === 'annulée',
                 }"
                 >{{ appointment.status }}</span
               >
@@ -152,16 +147,31 @@
             <td>
               <button
                 @click="cancelAppointment(appointment.id)"
-                class="btn btn-warning btn-sm"
+                class="btn btn-warning btn-sm me-2"
                 :aria-label="
                   'Annuler le rendez-vous du ' +
                   appointment.date +
                   ' à ' +
                   appointment.time
                 "
+                v-if="appointment.status !== 'annulée'"
               >
                 <i class="bi bi-x-circle"></i>
-                Cancel
+                Annuler
+              </button>
+              <button
+                @click="confirmAppointment(appointment.id)"
+                class="btn btn-success btn-sm"
+                :aria-label="
+                  'Confirmer le rendez-vous du ' +
+                  appointment.date +
+                  ' à ' +
+                  appointment.time
+                "
+                v-if="appointment.status === 'attente'"
+              >
+                <i class="bi bi-check-circle"></i>
+                Confirmer
               </button>
             </td>
           </tr>
@@ -199,7 +209,7 @@ const appointments = computed(
 // Renvoie true si au moins un rendez-vous existe ce jour-là
 function hasAppointmentOnDate(date) {
   return appointments.value.some(
-    (a) => a.date === date && a.status !== "cancelled"
+    (a) => a.date === date && a.status !== "annulée"
   );
 }
 
@@ -207,7 +217,7 @@ function hasAppointmentOnDate(date) {
 const datesWithAppointments = computed(() => {
   const set = new Set();
   appointments.value.forEach((a) => {
-    if (a.status !== "cancelled") set.add(a.date);
+    if (a.status !== "annulée") set.add(a.date);
   });
   return Array.from(set).sort();
 });
@@ -218,6 +228,8 @@ const deleteAvailability = (id) =>
   store.dispatch("appointments/deleteAvailability", id);
 const cancelAppointment = (id) =>
   store.dispatch("appointments/cancelAppointment", id);
+const confirmAppointment = (id) =>
+  store.dispatch("appointments/confirmAppointment", id);
 
 const handleAddAvailability = async () => {
   addMessage.value = "";

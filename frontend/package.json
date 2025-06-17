@@ -6,7 +6,8 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "test:unit": "vue-cli-service test:unit"
+    "test:unit": "vue-cli-service test:unit",
+    "test": "npm run test:unit"
   },
   "dependencies": {
     "axios": "^1.9.0",
@@ -17,7 +18,10 @@
   },
   "devDependencies": {
     "@vue/cli-plugin-router": "~5.0.0",
-    "@vue/cli-service": "~5.0.0"
+    "@vue/cli-plugin-unit-jest": "^5.0.8",
+    "@vue/cli-service": "~5.0.0",
+    "@vue/test-utils": "^2.4.6",
+    "jest": "^27.5.1"
   },
   "browserslist": [
     "> 1%",

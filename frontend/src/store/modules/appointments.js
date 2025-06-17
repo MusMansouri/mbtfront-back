@@ -114,7 +114,7 @@ const actions = {
       const API_URL = process.env.VUE_APP_API_URL;
       await axios.put(
         `${API_URL}/appointments/${id}`,
-        { status: "cancelled" },
+        { status: "annulée" },
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -191,6 +191,46 @@ const actions = {
       }
     );
     return response.data; // Tableau de créneaux horaires
+  },
+  async confirmAppointment({ dispatch, commit }, id) {
+    commit("setLoading", true);
+    try {
+      const token = localStorage.getItem("jwt");
+      const API_URL = process.env.VUE_APP_API_URL;
+      await axios.put(
+        `${API_URL}/appointments/${id}`,
+        { status: "confirmé" },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      await dispatch("fetchAppointments");
+    } catch (error) {
+      commit("setError", error.message);
+      throw error;
+    } finally {
+      commit("setLoading", false);
+    }
+  },
+  async reinstateAppointment({ dispatch, commit }, id) {
+    commit("setLoading", true);
+    try {
+      const token = localStorage.getItem("jwt");
+      const API_URL = process.env.VUE_APP_API_URL;
+      await axios.put(
+        `${API_URL}/appointments/${id}`,
+        { status: "attente" },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      await dispatch("fetchAppointments");
+    } catch (error) {
+      commit("setError", error.message);
+      throw error;
+    } finally {
+      commit("setLoading", false);
+    }
   },
 };
 

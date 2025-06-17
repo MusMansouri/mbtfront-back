@@ -1,0 +1,15 @@
+@startuml
+start
+:Afficher la liste des rituels;
+:Sélectionner un rituel;
+:Afficher les disponibilités;
+:Choisir une date et une heure;
+:Entrer les informations utilisateur;
+:Valider la demande de rendez-vous;
+if (Création réussie ?) then (oui)
+  :Afficher confirmation;
+else (non)
+  :Afficher un message d'erreur;
+endif
+stop
+@enduml

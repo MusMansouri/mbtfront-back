@@ -2,21 +2,30 @@ name: Frontend CI
 
 on:
   push:
-    branches: [main]
+    branches: [main] # Déclenchement sur push vers main
   pull_request:
-    branches: [main]
+    branches: [main] # Déclenchement sur pull request vers main
 
 jobs:
-  build:
+  build-and-test:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./frontend
+
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v3 # Récupère le code source
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20 # Utilise Node.js 20
+
       - name: Install dependencies
-        run: npm install
-      - name: Lint
-        run: npm run lint || true
+        run: npm ci
+        working-directory: ./frontend # Installation des dépendances
+
+      - name: Run unit tests
+        run: npm run test:unit # Exécution des tests Jest
+        working-directory: ./frontend
+
       - name: Build
-        run: npm run build
+        run: npm run build # Build du front-end
+        working-directory: ./frontend

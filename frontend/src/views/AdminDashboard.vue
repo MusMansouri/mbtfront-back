@@ -864,15 +864,26 @@
                   :key="appointment.id"
                 >
                   <td>{{ formatDate(appointment.date) }}</td>
-                  <td>{{ appointment.time }}</td>
+                  <td>
+                    {{
+                      appointment.time ||
+                      appointment.heure ||
+                      (appointment.startTime
+                        ? appointment.startTime +
+                          (appointment.endTime
+                            ? " - " + appointment.endTime
+                            : "")
+                        : "")
+                    }}
+                  </td>
                   <td>{{ appointment.clientName }}</td>
                   <td>{{ appointment.ritualName }}</td>
                   <td>
                     <span
                       :class="{
-                        'badge bg-success': appointment.status === 'confirmed',
-                        'badge bg-warning': appointment.status === 'pending',
-                        'badge bg-danger': appointment.status === 'cancelled',
+                        'badge bg-success': appointment.status === 'confirmé',
+                        'badge bg-warning': appointment.status === 'attente',
+                        'badge bg-danger': appointment.status === 'annulée',
                       }"
                     >
                       {{ appointment.status }}
@@ -881,21 +892,110 @@
                   <td>
                     <button
                       @click="
-                        store.dispatch(
-                          'appointments/cancelAppointment',
-                          appointment.id
-                        )
+                        store
+                          .dispatch(
+                            'appointments/cancelAppointment',
+                            appointment.id
+                          )
+                          .then(() =>
+                            showToast(
+                              'Rendez-vous annulé avec succès.',
+                              'warning'
+                            )
+                          )
                       "
-                      class="btn btn-warning btn-sm"
+                      class="btn btn-warning btn-sm me-2"
                       :aria-label="
                         'Annuler le rendez-vous du ' +
                         appointment.date +
                         ' à ' +
                         appointment.time
                       "
+                      v-if="
+                        appointment.status !== 'confirmé' &&
+                        appointment.status !== 'annulée'
+                      "
                     >
                       <i class="bi bi-x-circle"></i>
                       Annuler
+                    </button>
+                    <button
+                      @click="
+                        store
+                          .dispatch(
+                            'appointments/confirmAppointment',
+                            appointment.id
+                          )
+                          .then(() =>
+                            showToast(
+                              'Rendez-vous confirmé avec succès.',
+                              'success'
+                            )
+                          )
+                      "
+                      class="btn btn-success btn-sm"
+                      :aria-label="
+                        'Confirmer le rendez-vous du ' +
+                        appointment.date +
+                        ' à ' +
+                        appointment.time
+                      "
+                      v-if="appointment.status === 'attente'"
+                    >
+                      <i class="bi bi-check-circle"></i>
+                      Confirmer
+                    </button>
+                    <button
+                      @click="
+                        store
+                          .dispatch(
+                            'appointments/reinstateAppointment',
+                            appointment.id
+                          )
+                          .then(() =>
+                            showToast(
+                              'Rendez-vous réactivé avec succès.',
+                              'success'
+                            )
+                          )
+                      "
+                      class="btn btn-info btn-sm me-2"
+                      :aria-label="
+                        'Réactiver le rendez-vous du ' +
+                        appointment.date +
+                        ' à ' +
+                        (appointment.time || appointment.heure || '')
+                      "
+                      v-if="appointment.status === 'annulée'"
+                    >
+                      <i class="bi bi-arrow-counterclockwise"></i>
+                      Réactiver
+                    </button>
+                    <button
+                      @click="
+                        store
+                          .dispatch(
+                            'appointments/cancelAppointment',
+                            appointment.id
+                          )
+                          .then(() =>
+                            showToast(
+                              'Rendez-vous désactivé avec succès.',
+                              'warning'
+                            )
+                          )
+                      "
+                      class="btn btn-secondary btn-sm me-2"
+                      :aria-label="
+                        'Désactiver le rendez-vous du ' +
+                        appointment.date +
+                        ' à ' +
+                        (appointment.time || appointment.heure || '')
+                      "
+                      v-if="appointment.status === 'confirmé'"
+                    >
+                      <i class="bi bi-slash-circle"></i>
+                      Désactiver
                     </button>
                   </td>
                 </tr>
@@ -972,6 +1072,26 @@
         </div>
       </div>
     </div>
+
+    <!-- Toast de notification -->
+    <div
+      v-if="showToastFlag"
+      :class="[
+        'toast',
+        'show',
+        toastType === 'success' ? 'bg-success' : 'bg-warning',
+        'text-white',
+      ]"
+      style="
+        position: fixed;
+        top: 80px;
+        right: 30px;
+        z-index: 9999;
+        min-width: 200px;
+      "
+    >
+      {{ toastMessage }}
+    </div>
   </div>
 </template>
 
@@ -988,7 +1108,7 @@ const totalAppointments = computed(
 const upcomingAppointments = computed(() => {
   const today = new Date().toISOString().slice(0, 10);
   return store.getters["appointments/allAppointments"]
-    .filter((a) => a.status !== "cancelled" && a.date >= today)
+    .filter((a) => a.status !== "annulée" && a.date >= today)
     .sort(
       (a, b) =>
         (a.date || "").localeCompare(b.date || "") ||
@@ -1222,6 +1342,16 @@ const handleAddAvailability = async () => {
     console.error(e);
   }
 };
+
+const toastMessage = ref("");
+const toastType = ref("");
+const showToastFlag = ref(false);
+function showToast(message, type = "success") {
+  toastMessage.value = message;
+  toastType.value = type;
+  showToastFlag.value = true;
+  setTimeout(() => (showToastFlag.value = false), 2000);
+}
 </script>
 
 <style scoped>
